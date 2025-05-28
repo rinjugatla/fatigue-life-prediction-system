@@ -3,6 +3,12 @@
 	let files: FileList | null = null;
 	// 文字エンコード
 	let encode = 'utf-8';
+	// ヘッダーがあるか
+	let existsHeaderRow = false;
+	// 日時列があるか
+	let existsDatetimeColumn = false;
+	// ミリ秒列があるか
+	let existsMillisecondColumn = false;
 	// ファイルの内容
 	let fileContent = '';
 	// エラーメッセージ
@@ -63,6 +69,21 @@
 			<option value="utf-8">UTF-8</option>
 			<option value="sjis">SJIS</option>
 		</select>
+
+		<label class="label">
+			<input type="checkbox" bind:checked={existsHeaderRow} class="checkbox" />
+			Exists header row
+		</label>
+
+		<label class="label">
+			<input type="checkbox" bind:checked={existsDatetimeColumn} class="checkbox" />
+			Exists datetime column
+		</label>
+
+		<label class="label">
+			<input type="checkbox" bind:checked={existsMillisecondColumn} class="checkbox" />
+			Exists millisecond column
+		</label>
 	</fieldset>
 
 	<fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
