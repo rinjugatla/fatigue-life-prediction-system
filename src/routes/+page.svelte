@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { MeasurementData } from "$lib/measurement_data";
+
 	// ファイル
 	let files: FileList | null = null;
+    // 区切り文字
+    let delimiter: ',' | '\t' = ',';
 	// 文字エンコード
 	let encode = 'utf-8';
 	// ヘッダーがあるか
@@ -47,10 +51,14 @@
 		}
 
 		const file = files[0];
+        file.name.endsWith('.tsv') ? delimiter = '\t' : delimiter = ',';
+
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			fileContent = e.target?.result as string;
 			analyzing = false;
+            const data = new MeasurementData({delimiter, existsHeaderRow, existsDatetimeColumn, existsMillisecondColumn});
+            data.read(fileContent);
 		};
 		reader.readAsText(file, encode);
 		analyzing = true;
