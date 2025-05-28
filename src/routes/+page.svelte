@@ -1,25 +1,27 @@
 <script lang="ts">
-    // ファイル
+	// ファイル
 	let files: FileList | null = null;
-    // 文字エンコード
+	// 文字エンコード
 	let encode = 'utf-8';
-    // ファイルの内容
+	// ファイルの内容
 	let fileContent = '';
-    // エラーメッセージ
+	// エラーメッセージ
 	let errorMessage = '';
-    // 解析中か(解析が長い場合に連続でボタンを押させないため)
-    let analyzing = false;
+	// 解析中か(解析が長い場合に連続でボタンを押させないため)
+	let analyzing = false;
 
 	const analyze = () => {
-		const hasError = errorHandler()
-        if (hasError){ return; }
+		const hasError = errorHandler();
+		if (hasError) {
+			return;
+		}
 
 		loadFile();
 	};
 
-    // 例外処理
-    const errorHandler = () => {
-        if (!files || files.length === 0) {
+	// 例外処理
+	const errorHandler = () => {
+		if (!files || files.length === 0) {
 			errorMessage = 'No file selected';
 			return true;
 		}
@@ -28,23 +30,25 @@
 			return true;
 		}
 
-        errorMessage = '';
-        return false;
-    }
+		errorMessage = '';
+		return false;
+	};
 
-    // ファイル読み込み
-    const loadFile = () => {
-        if (!files){return}
+	// ファイル読み込み
+	const loadFile = () => {
+		if (!files) {
+			return;
+		}
 
-        const file = files[0];
+		const file = files[0];
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			fileContent = e.target?.result as string;
 			analyzing = false;
 		};
 		reader.readAsText(file, encode);
-        analyzing = true;
-    }
+		analyzing = true;
+	};
 </script>
 
 <form>
