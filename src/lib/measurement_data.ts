@@ -30,7 +30,7 @@ export class MeasurementData {
      */
     private initPoints(firstRowData: string[]): void {
         for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
-            const label = this._option.existsHeaderRow ? firstRowData[i - this._dataStartColumnIndex] : `Point ${i - this._dataStartColumnIndex + 1}`;
+            const label = this._option.existsHeaderRow ? firstRowData[i] : `Point ${i - this._dataStartColumnIndex + 1}`;
             this._points.push(new MeasurementSpot(label));
         }
 
