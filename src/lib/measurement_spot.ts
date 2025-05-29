@@ -4,7 +4,7 @@ import { MeasurementValue } from "./measurement_value";
 /**
  * 計測位置と計測値の管理
  */
-export class MeasurementPoint {
+export class MeasurementSpot {
   // 計測位置ラベル
   private _label: string = '';
   // 計測値

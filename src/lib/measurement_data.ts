@@ -1,12 +1,12 @@
 import type { DataOption } from "./data_option";
-import { MeasurementPoint } from "./measurement_point";
+import { MeasurementSpot } from "./measurement_spot";
 
 /**
  * 計測データ(csv, tsv)を読み込むクラス
  */
 export class MeasurementData {
     private _option: DataOption;
-    private _points: MeasurementPoint[] = [];
+    private _points: MeasurementSpot[] = [];
     private _columnCount: number = 0;
     private _dataStartColumnIndex: number = 0;
 
@@ -31,7 +31,7 @@ export class MeasurementData {
     private initPoints(firstRowData: string[]): void {
         for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
             const label = this._option.existsHeaderRow ? firstRowData[i - this._dataStartColumnIndex] : `Point ${i - this._dataStartColumnIndex + 1}`;
-            this._points.push(new MeasurementPoint(label));
+            this._points.push(new MeasurementSpot(label));
         }
 
         if (!this._option.existsHeaderRow) {
