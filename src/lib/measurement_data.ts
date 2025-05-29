@@ -14,6 +14,10 @@ export class MeasurementData {
         this._option = option;
     }
 
+    /**
+     * 計測データ読み込み
+     * @param text 計測データテキスト
+     */
     public read(text: string): void {
         const lines = text.split(/\r\n|\n|\r/).map(line => line.trim()).filter(line => line.length > 0);
 
