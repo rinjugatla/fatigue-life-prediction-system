@@ -92,7 +92,7 @@ export class MeasurementData {
      * アルゴリズムはASTM E1049-85に準拠
      * 並列計算によりパフォーマンスを向上
      */
-    public  calcRainDropAsync = async () => {
+    public calcRainDropAsync = async () => {
         const promises = this._spots.map(spot => {
             return new Promise<void>((resolve) => {
                 spot.calculateRainDropsAsync();
