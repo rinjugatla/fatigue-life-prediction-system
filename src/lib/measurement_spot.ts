@@ -151,7 +151,7 @@ export class MeasurementSpot {
       const nextAmplitude = Math.abs(nextNode.value - nextNextNode.value);
 
       // 小ループを形成する点のみ処理
-      const hasSmallLoop = currentAmplitude >= nextAmplitude && nextAmplitude > 0;
+      const hasSmallLoop = nextAmplitude >= currentAmplitude && currentAmplitude > 0;
       if (hasSmallLoop) {
         const isFirstNode = !node.prev;
         if (isFirstNode) {
