@@ -7,17 +7,27 @@ import { CycleType } from "./rain_drop";
  * 計測位置と計測値の管理
  */
 export class MeasurementSpot {
-  // 計測位置ラベル
+  /** 計測位置ラベル */
   private _label: string = '';
-  // 計測値
+  /** 計測値 */
   private _list: MeasurementList = new MeasurementList();
-  // レインフロー法による計算結果（振幅の範囲とサイクル数）
+  /** レインフロー法による計算結果（振幅の範囲とサイクル数） */
   private _rainDrops: RainDrop[] = [];
-  // レインフロー法で計算された最大振幅範囲
+  /** レインフロー法で計算された最大振幅範囲 */
   private _maxRange: number = 0;
 
   constructor(label: string) {
     this._label = label;
+  }
+
+  /** 計測位置ラベルを取得 */
+  public get label(): string {
+    return this._label;
+  }
+
+  /** 計測値リストを取得 */
+  public get list(): MeasurementList {
+    return this._list;
   }
 
   public insertData(data: number): void {
@@ -253,19 +263,5 @@ export class MeasurementSpot {
     if (this._maxRange < range) {
       this._maxRange = range;
     }
-  }
-
-  /**
-   * 計測位置ラベルを取得
-   */
-  public get label(): string {
-    return this._label;
-  }
-
-  /**
-   * 計測値リストを取得
-   */
-  public get list(): MeasurementList {
-    return this._list;
   }
 }
