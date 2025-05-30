@@ -153,7 +153,8 @@ export class MeasurementSpot {
       // 小ループを形成する点のみ処理
       const hasSmallLoop = currentAmplitude >= nextAmplitude && nextAmplitude > 0;
       if (hasSmallLoop) {
-        if (!node.prev) {
+        const isFirstNode = !node.prev;
+        if (isFirstNode) {
           // ノードが最初の点の場合: 0.5サイクル処理
           this.processHalfCycle(workingList, rainDrops, node, currentAmplitude);
         } else {
