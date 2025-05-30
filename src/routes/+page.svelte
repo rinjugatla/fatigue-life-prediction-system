@@ -54,11 +54,22 @@
         file.name.endsWith('.tsv') ? delimiter = '\t' : delimiter = ',';
 
 		const reader = new FileReader();
-		reader.onload = (e) => {
+		reader.onload = async (e) => {
 			fileContent = e.target?.result as string;
-			analyzing = false;
-            const data = new MeasurementData({delimiter, existsHeaderRow, existsDatetimeColumn, existsMillisecondColumn});
-            data.read(fileContent);
+			const data = new MeasurementData({delimiter, existsHeaderRow, existsDatetimeColumn, existsMillisecondColumn});
+			data.read(fileContent);
+			
+			try {
+				// 並列処理を順番に実行
+				await data.extractPeaksAndValleysAsync();
+				await data.calcRainDropAsync();
+				console.log(data);
+			} catch (error) {
+				console.error('解析エラー:', error);
+				errorMessage = '解析中にエラーが発生しました';
+			} finally {
+				analyzing = false;
+			}
 		};
 		reader.readAsText(file, encode);
 		analyzing = true;

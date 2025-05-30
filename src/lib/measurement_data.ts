@@ -73,22 +73,34 @@ export class MeasurementData {
     /**
      * 計測値から極値（ピークと谷）を抽出
      * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
-     * @returns 計測スポットの配列数
+     * @returns Promise<void>
      */
-    public extractPeaksAndValleys(threshold: number = 0.001): void {
-        for (const spot of this._spots) {
-            spot.extractPeaksAndValleys(threshold)
-        }
+    public async extractPeaksAndValleysAsync(threshold: number = 0.001): Promise<number[]> {
+        const promises = this._spots.map(spot => {
+            return new Promise<number>((resolve) => {
+                const peakCount = spot.extractPeaksAndValleys(threshold);
+                resolve(peakCount);
+            });
+        });
+        
+        const peaksCount = await Promise.all(promises);
+        return peaksCount;
     }
 
     /**
      * レインフロー法によるひずみ振幅の計算
      * 
      * アルゴリズムはASTM E1049-85に準拠
+     * 並列計算によりパフォーマンスを向上
      */
-    public calcRainDrop(): void {
-        for (const spot of this._spots) {
-            spot.calcDropRain();
-        }
+    public async calcRainDropAsync(): Promise<void> {
+        const promises = this._spots.map(spot => {
+            return new Promise<void>((resolve) => {
+                spot.calcDropRain();
+                resolve();
+            });
+        });
+        
+        await Promise.all(promises);
     }
 }

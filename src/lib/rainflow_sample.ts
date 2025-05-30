@@ -18,10 +18,10 @@ export function rainflowSampleUsage(rawData: string): void {
     measurementData.read(rawData);
 
     // 極値（ピークと谷）の抽出
-    measurementData.extractPeaksAndValleys();
+    measurementData.extractPeaksAndValleysAsync();
 
     // レインフロー法による計算
-    measurementData.calcRainDrop();
+    measurementData.calcRainDropAsync();
 
     console.log("レインフロー計算が完了しました");
 }
