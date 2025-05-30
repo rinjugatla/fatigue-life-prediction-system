@@ -10,6 +10,8 @@ export class MeasurementSpot {
   private _label: string = '';
   // 計測値
   private _list: MeasurementList = new MeasurementList();
+  // レインフロー法による計算結果（振幅の範囲とサイクル数）
+  private _rainDrops: RainDrop[] = [];
 
   constructor(label: string) {
     this._label = label;
@@ -91,14 +93,12 @@ export class MeasurementSpot {
    * アルゴリズムはASTM E1049-85に準拠
    * @returns レインフローの計算結果配列
    */
-  public calcDropRain(): RainDrop[] {
+  public calcDropRain(): void {
     // 結果を格納する配列
     const rainDrops: RainDrop[] = [];
 
     // リストが空または1点しかない場合は早期リターン
-    if (this._list.size <= 1) {
-      return rainDrops;
-    }
+    if (this._list.size <= 1) { return; }
 
     // 作業用変数
     let X: number; // 次の振幅
@@ -202,7 +202,7 @@ export class MeasurementSpot {
       console.error("レインフロー計算エラー:", error);
     }
 
-    return rainDrops;
+    this._rainDrops = rainDrops;
   }
 
   /**
