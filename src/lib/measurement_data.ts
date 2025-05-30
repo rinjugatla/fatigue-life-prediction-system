@@ -18,7 +18,7 @@ export class MeasurementData {
      * 計測データ読み込み
      * @param text 計測データテキスト
      */
-    public read(text: string): void {
+    public read = (text: string) => {
         const lines = text.split(/\r\n|\n|\r/).map(line => line.trim()).filter(line => line.length > 0);
 
         this._dataStartColumnIndex = this._option.existsDatetimeColumn ? this._option.existsMillisecondColumn ? 2 : 1 : 0;
@@ -32,7 +32,7 @@ export class MeasurementData {
      * 計測スポットの配列を初期化
      * @param firstRowData 最初の行のデータ
      */
-    private initPoints(firstRowData: string[]): void {
+    private initPoints = (firstRowData: string[]) => {
         for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
             const label = this._option.existsHeaderRow ? firstRowData[i] : `Point ${i - this._dataStartColumnIndex + 1}`;
             this._spots.push(new MeasurementSpot(label));
@@ -51,7 +51,7 @@ export class MeasurementData {
      * 計測スポットのデータ読み込み
      * @param lines 計測データの行
      */
-    private readDataRows(lines: string[]): void {
+    private readDataRows = (lines: string[]) => {
         for (let rowIndex = 1; rowIndex < lines.length; rowIndex++) {
             const rowData = lines[rowIndex].split(this._option.delimiter);
             const isSameCplumnCount = rowData.length === this._columnCount;
@@ -75,7 +75,7 @@ export class MeasurementData {
      * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
      * @returns Promise<MeasurementSpot[]> 抽出された極値を持つ計測スポットの配列
      */
-    public async extractPeaksAndValleysAsync(threshold: number = 0.001) {
+    public extractPeaksAndValleysAsync = async (threshold: number = 0.001) => {
         const promises = this._spots.map(spot => {
             return new Promise<void>((resolve) => {
                 spot.extractPeaksAndValleysAsync(threshold);
@@ -92,7 +92,7 @@ export class MeasurementData {
      * アルゴリズムはASTM E1049-85に準拠
      * 並列計算によりパフォーマンスを向上
      */
-    public async calcRainDropAsync(): Promise<void> {
+    public  calcRainDropAsync = async () => {
         const promises = this._spots.map(spot => {
             return new Promise<void>((resolve) => {
                 spot.calculateRainDropsAsync();

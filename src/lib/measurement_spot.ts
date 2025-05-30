@@ -35,7 +35,7 @@ export class MeasurementSpot {
    * 計測値を最後に追加
    * @param value 計測値
    */
-  public insertData(value: number): void {
+  public insertData = (value: number) => {
     this._measurementValues.append(new MeasurementValue(value));
   }
 
@@ -44,7 +44,7 @@ export class MeasurementSpot {
    * 
    * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
    */
-  public async extractPeaksAndValleysAsync(threshold: number = 0.001): Promise<void> {
+  public extractPeaksAndValleysAsync = async (threshold: number = 0.001): Promise<void> => {
     const extracted = await extractPeaksAndValleysAsync(this._measurementValues, threshold);
     if (!extracted) { return; }
 
@@ -56,7 +56,7 @@ export class MeasurementSpot {
    * 
    * アルゴリズムはASTM E1049-85に準拠
    */
-  public async calculateRainDropsAsync(): Promise<void> {
+  public calculateRainDropsAsync = async (): Promise<void> => {
     const rainDrops = await calculateRainDropsAsync(this._extractedPeaksAndValleys);
     this._rainDrops = rainDrops;
   }
