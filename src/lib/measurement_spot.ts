@@ -1,6 +1,7 @@
 import { MeasurementList } from "./measurement_list";
 import { MeasurementValue } from "./measurement_value";
 import type { RainDrop } from "./rain_drop";
+import { CycleType } from "./rain_drop";
 
 /**
  * 計測位置と計測値の管理
@@ -181,7 +182,7 @@ export class MeasurementSpot {
     // レンジを0.5サイクルとして挿入
     rainDrops.push({
       range: range,
-      cycle: false
+      cycleType: CycleType.HALF
     });
 
     // 最初の点を削除
@@ -207,7 +208,7 @@ export class MeasurementSpot {
     // レンジを1サイクルとして挿入
     rainDrops.push({
       range: range,
-      cycle: true
+      cycleType: CycleType.FULL
     });
 
     // 最大レンジの更新
@@ -239,7 +240,7 @@ export class MeasurementSpot {
 
       rainDrops.push({
         range: range,
-        cycle: false
+        cycleType: CycleType.HALF
       });
 
       // 最大レンジの更新
