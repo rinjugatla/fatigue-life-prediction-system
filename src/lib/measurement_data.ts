@@ -95,7 +95,7 @@ export class MeasurementData {
     public async calcRainDropAsync(): Promise<void> {
         const promises = this._spots.map(spot => {
             return new Promise<void>((resolve) => {
-                spot.calcDropRain();
+                spot.calculateRainDropsAsync();
                 resolve();
             });
         });
