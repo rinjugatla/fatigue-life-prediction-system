@@ -73,18 +73,17 @@ export class MeasurementData {
     /**
      * 計測値から極値（ピークと谷）を抽出
      * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
-     * @returns Promise<void>
+     * @returns Promise<MeasurementSpot[]> 抽出された極値を持つ計測スポットの配列
      */
-    public async extractPeaksAndValleysAsync(threshold: number = 0.001): Promise<number[]> {
+    public async extractPeaksAndValleysAsync(threshold: number = 0.001) {
         const promises = this._spots.map(spot => {
-            return new Promise<number>((resolve) => {
-                const peakCount = spot.extractPeaksAndValleys(threshold);
-                resolve(peakCount);
+            return new Promise<void>((resolve) => {
+                spot.extractPeaksAndValleysAsync();
+                resolve();
             });
         });
-        
-        const peaksCount = await Promise.all(promises);
-        return peaksCount;
+
+        await Promise.all(promises);
     }
 
     /**
@@ -100,7 +99,7 @@ export class MeasurementData {
                 resolve();
             });
         });
-        
+
         await Promise.all(promises);
     }
 }
