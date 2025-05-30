@@ -65,4 +65,15 @@ export class MeasurementData {
         if (this._option.existsHeaderRow) {
         }
     }
+
+    /**
+     * 計測値から極値（ピークと谷）を抽出
+     * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
+     * @returns 計測スポットの配列数
+     */
+    public extractPeaksAndValleys(threshold: number = 0.001): void {
+        for (const spot of this._spots) {
+            spot.extractPeaksAndValleys(threshold)
+        }
+    }
 }
