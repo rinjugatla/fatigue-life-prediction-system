@@ -13,6 +13,8 @@ export class MeasurementSpot {
   private _list: MeasurementList = new MeasurementList();
   // レインフロー法による計算結果（振幅の範囲とサイクル数）
   private _rainDrops: RainDrop[] = [];
+  // レインフロー法で計算された最大振幅範囲
+  private _maxRange: number = 0;
 
   constructor(label: string) {
     this._label = label;
@@ -99,12 +101,11 @@ export class MeasurementSpot {
     if (this._list.size <= 1) { return; }
 
     const rainDrops: RainDrop[] = [];
-    const stats = { maxRange: 0, isMaxRangeCycle: true };
     const workingList = this.createWorkingList();
 
     try {
-      this.processThreePointComparison(workingList, rainDrops, stats);
-      this.processRemainingPoints(workingList, rainDrops, stats);
+      this.processThreePointComparison(workingList, rainDrops);
+      this.processRemainingPoints(workingList, rainDrops);
     } catch (error) {
       console.error("レインフロー計算エラー:", error);
     }
@@ -135,8 +136,7 @@ export class MeasurementSpot {
    */
   private processThreePointComparison(
     workingList: MeasurementList,
-    rainDrops: RainDrop[],
-    stats: { maxRange: number, isMaxRangeCycle: boolean }
+    rainDrops: RainDrop[]
   ): void {
     let node = workingList.head as MeasurementValue | null;
 
@@ -155,10 +155,10 @@ export class MeasurementSpot {
       if (hasSmallLoop) {
         if (!node.prev) {
           // ノードが最初の点の場合: 0.5サイクル処理
-          this.processHalfCycle(workingList, rainDrops, node, currentAmplitude, stats);
+          this.processHalfCycle(workingList, rainDrops, node, currentAmplitude);
         } else {
           // 1サイクル処理
-          this.processFullCycle(workingList, rainDrops, node, currentAmplitude, stats);
+          this.processFullCycle(workingList, rainDrops, node, currentAmplitude);
         }
         // 先頭からやり直し
         node = workingList.head as MeasurementValue | null;
@@ -176,8 +176,7 @@ export class MeasurementSpot {
     workingList: MeasurementList,
     rainDrops: RainDrop[],
     node: MeasurementValue,
-    range: number,
-    stats: { maxRange: number, isMaxRangeCycle: boolean }
+    range: number
   ): void {
     // レンジを0.5サイクルとして挿入
     rainDrops.push({
@@ -188,11 +187,7 @@ export class MeasurementSpot {
     // 最初の点を削除
     workingList.remove(node);
 
-    // 最大レンジの更新
-    if (stats.maxRange < range) {
-      stats.maxRange = range;
-      stats.isMaxRangeCycle = false;
-    }
+    this.updateMaxRange(range);
   }
 
   /**
@@ -202,8 +197,7 @@ export class MeasurementSpot {
     workingList: MeasurementList,
     rainDrops: RainDrop[],
     node: MeasurementValue,
-    range: number,
-    stats: { maxRange: number, isMaxRangeCycle: boolean }
+    range: number
   ): void {
     // レンジを1サイクルとして挿入
     rainDrops.push({
@@ -211,11 +205,7 @@ export class MeasurementSpot {
       cycleType: CycleType.FULL
     });
 
-    // 最大レンジの更新
-    if (stats.maxRange < range) {
-      stats.maxRange = range;
-      stats.isMaxRangeCycle = true;
-    }
+    this.updateMaxRange(range);
 
     // 現在のレンジの点を削除（次の点と現在の点）
     if (node.next) {
@@ -229,8 +219,7 @@ export class MeasurementSpot {
    */
   private processRemainingPoints(
     workingList: MeasurementList,
-    rainDrops: RainDrop[],
-    stats: { maxRange: number, isMaxRangeCycle: boolean }
+    rainDrops: RainDrop[]
   ): void {
     let node = workingList.head as MeasurementValue | null;
     while (node && node.next) {
@@ -243,13 +232,21 @@ export class MeasurementSpot {
         cycleType: CycleType.HALF
       });
 
-      // 最大レンジの更新
-      if (stats.maxRange < range) {
-        stats.maxRange = range;
-        stats.isMaxRangeCycle = false;
-      }
+      this.updateMaxRange(range);
 
       node = node.next as MeasurementValue | null;
+    }
+  }
+
+  /**
+   * 最大レンジの更新
+   * 
+   * 統計用
+   * @param range レインフロー法で有効とされた振幅の範囲
+   */
+  private updateMaxRange(range: number): void {
+    if (this._maxRange < range) {
+      this._maxRange = range;
     }
   }
 
