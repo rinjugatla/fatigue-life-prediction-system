@@ -6,7 +6,7 @@ import { MeasurementSpot } from "./measurement_spot";
  */
 export class MeasurementData {
     private _option: DataOption;
-    private _points: MeasurementSpot[] = [];
+    private _spots: MeasurementSpot[] = [];
     private _columnCount: number = 0;
     private _dataStartColumnIndex: number = 0;
 
@@ -29,24 +29,28 @@ export class MeasurementData {
     }
 
     /**
-     * 計測ポイントの配列を初期化
+     * 計測スポットの配列を初期化
      * @param firstRowData 最初の行のデータ
      */
     private initPoints(firstRowData: string[]): void {
         for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
             const label = this._option.existsHeaderRow ? firstRowData[i] : `Point ${i - this._dataStartColumnIndex + 1}`;
-            this._points.push(new MeasurementSpot(label));
+            this._spots.push(new MeasurementSpot(label));
         }
 
         if (!this._option.existsHeaderRow) {
             // ヘッダが存在しない場合は1行目から計測データを読み込む
             for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
                 const value = parseFloat(firstRowData[i]);
-                this._points[i - this._dataStartColumnIndex].insertData(value);
+                this._spots[i - this._dataStartColumnIndex].insertData(value);
             }
         }
     }
 
+    /**
+     * 計測スポットのデータ読み込み
+     * @param lines 計測データの行
+     */
     private readDataRows(lines: string[]): void {
         for (let rowIndex = 1; rowIndex < lines.length; rowIndex++) {
             const rowData = lines[rowIndex].split(this._option.delimiter);
@@ -58,7 +62,7 @@ export class MeasurementData {
             // 各計測ポイントにデータを挿入
             for (let columnIndex = this._dataStartColumnIndex; columnIndex < this._columnCount; columnIndex++) {
                 const value = parseFloat(rowData[columnIndex]);
-                this._points[columnIndex - this._dataStartColumnIndex].insertData(value);
+                this._spots[columnIndex - this._dataStartColumnIndex].insertData(value);
             }
         }
 
