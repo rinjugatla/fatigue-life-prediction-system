@@ -10,7 +10,7 @@ export class MeasurementSpot {
   /** 計測位置ラベル */
   private _label: string = '';
   /** 計測値 */
-  private _list: MeasurementList = new MeasurementList();
+  private _measurementValues: MeasurementList = new MeasurementList();
   /** レインフロー法による計算結果（振幅の範囲とサイクル数） */
   private _rainDrops: RainDrop[] = [];
   /** レインフロー法で計算された最大振幅範囲 */
@@ -27,11 +27,15 @@ export class MeasurementSpot {
 
   /** 計測値リストを取得 */
   public get list(): MeasurementList {
-    return this._list;
+    return this._measurementValues;
   }
 
-  public insertData(data: number): void {
-    this._list.append(new MeasurementValue(data));
+  /**
+   * 計測値を最後に追加
+   * @param value 計測値
+   */
+  public insertData(value: number): void {
+    this._measurementValues.append(new MeasurementValue(value));
   }
 
   /**
@@ -43,9 +47,10 @@ export class MeasurementSpot {
    */
   public extractPeaksAndValleys(threshold: number = 0.001): number {
     // 空のリストや少ないポイント数の場合は早期リターン
-    if (this._list.size === 0) return 0;
-    const values = this._list.toArray().map(item => item as MeasurementValue);
-    if (values.length <= 2) return values.length;
+    if (this._measurementValues.size === 0) { return 0; }
+
+    const values = this._measurementValues.toArray().map(item => item as MeasurementValue);
+    if (values.length <= 2) { return values.length; }
 
     // 結果を格納する配列
     const extremePoints: MeasurementValue[] = [];
@@ -94,10 +99,10 @@ export class MeasurementSpot {
     }
 
     // 元のリストを再構築
-    this._list = new MeasurementList();
-    extremePoints.forEach(point => this._list.append(point));
+    this._measurementValues = new MeasurementList();
+    extremePoints.forEach(point => this._measurementValues.append(point));
 
-    return this._list.size;
+    return this._measurementValues.size;
   }
 
   /**
@@ -108,7 +113,7 @@ export class MeasurementSpot {
    */
   public calcDropRain(): void {
     // リストが空または1点しかない場合は早期リターン
-    if (this._list.size <= 1) { return; }
+    if (this._measurementValues.size <= 1) { return; }
 
     const rainDrops: RainDrop[] = [];
     const workingList = this.createWorkingList();
@@ -129,7 +134,7 @@ export class MeasurementSpot {
    */
   private createWorkingList(): MeasurementList {
     const workingList = new MeasurementList();
-    const values = this._list.toArray().map(item => item as MeasurementValue);
+    const values = this._measurementValues.toArray().map(item => item as MeasurementValue);
 
     for (const value of values) {
       workingList.append(new MeasurementValue(value.value));
