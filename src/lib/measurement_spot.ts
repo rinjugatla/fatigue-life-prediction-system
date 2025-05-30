@@ -94,21 +94,35 @@ export class MeasurementSpot {
    * @returns レインフローの計算結果配列
    */
   public calcDropRain(): void {
-    // 結果を格納する配列
-    const rainDrops: RainDrop[] = [];
-
     // リストが空または1点しかない場合は早期リターン
     if (this._list.size <= 1) { return; }
 
-    // 作業用変数
-    let X: number; // 次の振幅
-    let Y: number; // 現在の振幅
-
-    // 最大レンジを保存するための変数
-    let maxRange = 0;
-    let isMaxRangeCycle = true;
+    // 結果を格納する配列
+    const rainDrops: RainDrop[] = [];
+    // 統計情報用オブジェクト
+    const stats = { maxRange: 0, isMaxRangeCycle: true };
 
     // リストのクローンを作成して作業する（元のデータを保持するため）
+    const workingList = this.createWorkingList();
+
+    try {
+      // 3点比較でレインフロー処理を行う
+      this.processThreePointComparison(workingList, rainDrops, stats);
+
+      // 小ループ除去後の残りの点に対して0.5サイクルでレンジを計数
+      this.processRemainingPoints(workingList, rainDrops, stats);
+    } catch (error) {
+      console.error("レインフロー計算エラー:", error);
+    }
+
+    this._rainDrops = rainDrops;
+  }
+
+  /**
+   * 作業用のリストを作成する
+   * @returns 作業用リスト
+   */
+  private createWorkingList(): MeasurementList {
     const workingList = new MeasurementList();
     const values = this._list.toArray().map(item => item as MeasurementValue);
 
@@ -116,93 +130,132 @@ export class MeasurementSpot {
       workingList.append(new MeasurementValue(value.value));
     }
 
-    // 3点比較でレインフロー処理を行う
-    try {
-      // 最初から順に処理
-      let node = workingList.head as MeasurementValue | null;
+    return workingList;
+  }
 
-      // 少なくとも3点あることを確認
-      while (node && node.next && node.next.next) {
-        const currentNode = node as MeasurementValue;
-        const nextNode = node.next as MeasurementValue;
-        const nextNextNode = node.next.next as MeasurementValue;
+  /**
+   * 3点比較によるレインフロー処理
+   * @param workingList 作業用リスト
+   * @param rainDrops 結果格納配列
+   * @param stats 統計情報
+   */
+  private processThreePointComparison(
+    workingList: MeasurementList,
+    rainDrops: RainDrop[],
+    stats: { maxRange: number, isMaxRangeCycle: boolean }
+  ): void {
+    let node = workingList.head as MeasurementValue | null;
 
-        // 振幅の計算
-        Y = Math.abs(currentNode.value - nextNode.value);
-        X = Math.abs(nextNode.value - nextNextNode.value);
+    // 少なくとも3点あることを確認
+    while (node && node.next && node.next.next) {
+      const currentNode = node as MeasurementValue;
+      const nextNode = node.next as MeasurementValue;
+      const nextNextNode = node.next.next as MeasurementValue;
 
-        // 小ループを形成する点のみ処理 (X >= Y && Y > 0)
-        if (X >= Y && Y > 0) {
-          // ノードが最初の点の場合
-          if (!node.prev) {
-            // レンジYを0.5サイクルとして挿入
-            rainDrops.push({
-              range: Y,
-              cycle: false
-            });
+      // 振幅の計算
+      const Y = Math.abs(currentNode.value - nextNode.value); // 現在の振幅
+      const X = Math.abs(nextNode.value - nextNextNode.value); // 次の振幅
 
-            // 最初の点を削除
-            workingList.remove(node);
-
-            // 最大レンジの更新
-            if (maxRange < Y) {
-              maxRange = Y;
-              isMaxRangeCycle = false;
-            }
-
-            // 先頭からやり直し
-            node = workingList.head as MeasurementValue | null;
-          } else {
-            // レンジYを1サイクルとして挿入
-            rainDrops.push({
-              range: Y,
-              cycle: true
-            });
-
-            // 最大レンジの更新
-            if (maxRange < Y) {
-              maxRange = Y;
-              isMaxRangeCycle = true;
-            }
-
-            // Yレンジの点を削除（次の点と現在の点）
-            workingList.remove(node.next);
-            workingList.remove(node);
-
-            // 先頭からやり直し
-            node = workingList.head as MeasurementValue | null;
-          }
+      // 小ループを形成する点のみ処理 (X >= Y && Y > 0)
+      if (X >= Y && Y > 0) {
+        if (!node.prev) {
+          // ノードが最初の点の場合: 0.5サイクル処理
+          this.processHalfCycle(workingList, rainDrops, node, Y, stats);
         } else {
-          // 次の点に移動
-          node = node.next as MeasurementValue | null;
+          // 1サイクル処理
+          this.processFullCycle(workingList, rainDrops, node, Y, stats);
         }
-      }
-
-      // 小ループ除去後の残りの点に対して0.5サイクルでレンジを計数
-      node = workingList.head as MeasurementValue | null;
-      while (node && node.next) {
-        const currentNode = node as MeasurementValue;
-        const nextNode = node.next as MeasurementValue;
-        const range = Math.abs(currentNode.value - nextNode.value);
-
-        rainDrops.push({
-          range: range,
-          cycle: false
-        });
-
-        // 最大レンジの更新
-        if (maxRange < range) {
-          maxRange = range;
-          isMaxRangeCycle = false;
-        }
-
+        // 先頭からやり直し
+        node = workingList.head as MeasurementValue | null;
+      } else {
+        // 次の点に移動
         node = node.next as MeasurementValue | null;
       }
-    } catch (error) {
-      console.error("レインフロー計算エラー:", error);
+    }
+  }
+
+  /**
+   * 0.5サイクル処理
+   */
+  private processHalfCycle(
+    workingList: MeasurementList,
+    rainDrops: RainDrop[],
+    node: MeasurementValue,
+    range: number,
+    stats: { maxRange: number, isMaxRangeCycle: boolean }
+  ): void {
+    // レンジYを0.5サイクルとして挿入
+    rainDrops.push({
+      range: range,
+      cycle: false
+    });
+
+    // 最初の点を削除
+    workingList.remove(node);
+
+    // 最大レンジの更新
+    if (stats.maxRange < range) {
+      stats.maxRange = range;
+      stats.isMaxRangeCycle = false;
+    }
+  }
+
+  /**
+   * 1サイクル処理
+   */
+  private processFullCycle(
+    workingList: MeasurementList,
+    rainDrops: RainDrop[],
+    node: MeasurementValue,
+    range: number,
+    stats: { maxRange: number, isMaxRangeCycle: boolean }
+  ): void {
+    // レンジYを1サイクルとして挿入
+    rainDrops.push({
+      range: range,
+      cycle: true
+    });
+
+    // 最大レンジの更新
+    if (stats.maxRange < range) {
+      stats.maxRange = range;
+      stats.isMaxRangeCycle = true;
     }
 
-    this._rainDrops = rainDrops;
+    // Yレンジの点を削除（次の点と現在の点）
+    if (node.next) {
+      workingList.remove(node.next);
+    }
+    workingList.remove(node);
+  }
+
+  /**
+   * 残りの点の処理
+   */
+  private processRemainingPoints(
+    workingList: MeasurementList,
+    rainDrops: RainDrop[],
+    stats: { maxRange: number, isMaxRangeCycle: boolean }
+  ): void {
+    let node = workingList.head as MeasurementValue | null;
+    while (node && node.next) {
+      const currentNode = node as MeasurementValue;
+      const nextNode = node.next as MeasurementValue;
+      const range = Math.abs(currentNode.value - nextNode.value);
+
+      rainDrops.push({
+        range: range,
+        cycle: false
+      });
+
+      // 最大レンジの更新
+      if (stats.maxRange < range) {
+        stats.maxRange = range;
+        stats.isMaxRangeCycle = false;
+      }
+
+      node = node.next as MeasurementValue | null;
+    }
   }
 
   /**
