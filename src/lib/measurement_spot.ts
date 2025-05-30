@@ -156,7 +156,7 @@ export class MeasurementSpot {
         const isFirstNode = !node.prev;
         if (isFirstNode) {
           // ノードが最初の点の場合: 0.5サイクル処理
-          this.processHalfCycle(workingList, rainDrops, node, currentAmplitude);
+          this.processFirstCycle(workingList, rainDrops, node, currentAmplitude);
         } else {
           // 1サイクル処理
           this.processFullCycle(workingList, rainDrops, node, currentAmplitude);
@@ -171,9 +171,11 @@ export class MeasurementSpot {
   }
 
   /**
-   * 0.5サイクル処理
+   * 最初の点の振幅を記録
+   * 
+   * 0.5サイクルとして処理
    */
-  private processHalfCycle(
+  private processFirstCycle(
     workingList: MeasurementList,
     rainDrops: RainDrop[],
     node: MeasurementValue,
@@ -192,7 +194,9 @@ export class MeasurementSpot {
   }
 
   /**
-   * 1サイクル処理
+   * 最初以外の点の振幅を記録
+   * 
+   * 1サイクルとして処理
    */
   private processFullCycle(
     workingList: MeasurementList,
