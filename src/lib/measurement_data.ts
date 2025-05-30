@@ -78,7 +78,7 @@ export class MeasurementData {
     public async extractPeaksAndValleysAsync(threshold: number = 0.001) {
         const promises = this._spots.map(spot => {
             return new Promise<void>((resolve) => {
-                spot.extractPeaksAndValleysAsync();
+                spot.extractPeaksAndValleysAsync(threshold);
                 resolve();
             });
         });
