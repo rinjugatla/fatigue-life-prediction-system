@@ -152,18 +152,19 @@ export class MeasurementSpot {
       const nextNode = node.next as MeasurementValue;
       const nextNextNode = node.next.next as MeasurementValue;
 
-      // 振幅の計算
-      const Y = Math.abs(currentNode.value - nextNode.value); // 現在の振幅
-      const X = Math.abs(nextNode.value - nextNextNode.value); // 次の振幅
+      // 振幅
+      const currentAmplitude = Math.abs(currentNode.value - nextNode.value);
+      const nextAmplitude = Math.abs(nextNode.value - nextNextNode.value);
 
-      // 小ループを形成する点のみ処理 (X >= Y && Y > 0)
-      if (X >= Y && Y > 0) {
+      // 小ループを形成する点のみ処理
+      const hasSmallLoop = currentAmplitude >= nextAmplitude && nextAmplitude > 0;
+      if (hasSmallLoop) {
         if (!node.prev) {
           // ノードが最初の点の場合: 0.5サイクル処理
-          this.processHalfCycle(workingList, rainDrops, node, Y, stats);
+          this.processHalfCycle(workingList, rainDrops, node, currentAmplitude, stats);
         } else {
           // 1サイクル処理
-          this.processFullCycle(workingList, rainDrops, node, Y, stats);
+          this.processFullCycle(workingList, rainDrops, node, currentAmplitude, stats);
         }
         // 先頭からやり直し
         node = workingList.head as MeasurementValue | null;
@@ -184,7 +185,7 @@ export class MeasurementSpot {
     range: number,
     stats: { maxRange: number, isMaxRangeCycle: boolean }
   ): void {
-    // レンジYを0.5サイクルとして挿入
+    // レンジを0.5サイクルとして挿入
     rainDrops.push({
       range: range,
       cycle: false
@@ -210,7 +211,7 @@ export class MeasurementSpot {
     range: number,
     stats: { maxRange: number, isMaxRangeCycle: boolean }
   ): void {
-    // レンジYを1サイクルとして挿入
+    // レンジを1サイクルとして挿入
     rainDrops.push({
       range: range,
       cycle: true
@@ -222,7 +223,7 @@ export class MeasurementSpot {
       stats.isMaxRangeCycle = true;
     }
 
-    // Yレンジの点を削除（次の点と現在の点）
+    // 現在のレンジの点を削除（次の点と現在の点）
     if (node.next) {
       workingList.remove(node.next);
     }
