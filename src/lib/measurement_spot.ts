@@ -1,5 +1,6 @@
 import { MeasurementList } from "./measurement_list";
 import { MeasurementValue } from "./measurement_value";
+import type { RainDrop } from "./rain_drop";
 
 /**
  * 計測位置と計測値の管理
@@ -82,6 +83,126 @@ export class MeasurementSpot {
     extremePoints.forEach(point => this._list.append(point));
 
     return this._list.size;
+  }
+
+  /**
+   * レインフロー法によるひずみ振幅の計算
+   * 
+   * アルゴリズムはASTM E1049-85に準拠
+   * @returns レインフローの計算結果配列
+   */
+  public calcDropRain(): RainDrop[] {
+    // 結果を格納する配列
+    const rainDrops: RainDrop[] = [];
+
+    // リストが空または1点しかない場合は早期リターン
+    if (this._list.size <= 1) {
+      return rainDrops;
+    }
+
+    // 作業用変数
+    let X: number; // 次の振幅
+    let Y: number; // 現在の振幅
+
+    // 最大レンジを保存するための変数
+    let maxRange = 0;
+    let isMaxRangeCycle = true;
+
+    // リストのクローンを作成して作業する（元のデータを保持するため）
+    const workingList = new MeasurementList();
+    const values = this._list.toArray().map(item => item as MeasurementValue);
+
+    for (const value of values) {
+      workingList.append(new MeasurementValue(value.value));
+    }
+
+    // 3点比較でレインフロー処理を行う
+    try {
+      // 最初から順に処理
+      let node = workingList.head as MeasurementValue | null;
+
+      // 少なくとも3点あることを確認
+      while (node && node.next && node.next.next) {
+        const currentNode = node as MeasurementValue;
+        const nextNode = node.next as MeasurementValue;
+        const nextNextNode = node.next.next as MeasurementValue;
+
+        // 振幅の計算
+        Y = Math.abs(currentNode.value - nextNode.value);
+        X = Math.abs(nextNode.value - nextNextNode.value);
+
+        // 小ループを形成する点のみ処理 (X >= Y && Y > 0)
+        if (X >= Y && Y > 0) {
+          // ノードが最初の点の場合
+          if (!node.prev) {
+            // レンジYを0.5サイクルとして挿入
+            rainDrops.push({
+              range: Y,
+              cycle: false
+            });
+
+            // 最初の点を削除
+            workingList.remove(node);
+
+            // 最大レンジの更新
+            if (maxRange < Y) {
+              maxRange = Y;
+              isMaxRangeCycle = false;
+            }
+
+            // 先頭からやり直し
+            node = workingList.head as MeasurementValue | null;
+          } else {
+            // レンジYを1サイクルとして挿入
+            rainDrops.push({
+              range: Y,
+              cycle: true
+            });
+
+            // 最大レンジの更新
+            if (maxRange < Y) {
+              maxRange = Y;
+              isMaxRangeCycle = true;
+            }
+
+            // Yレンジの点を削除（次の点と現在の点）
+            workingList.remove(node.next);
+            workingList.remove(node);
+
+            // 先頭からやり直し
+            node = workingList.head as MeasurementValue | null;
+          }
+        } else {
+          // 次の点に移動
+          node = node.next as MeasurementValue | null;
+        }
+      }
+
+      // 小ループ除去後の残りの点に対して0.5サイクルでレンジを計数
+      node = workingList.head as MeasurementValue | null;
+      while (node && node.next) {
+        const currentNode = node as MeasurementValue;
+        const nextNode = node.next as MeasurementValue;
+        const range = Math.abs(currentNode.value - nextNode.value);
+
+        rainDrops.push({
+          range: range,
+          cycle: false
+        });
+
+        // 最大レンジの更新
+        if (maxRange < range) {
+          maxRange = range;
+          isMaxRangeCycle = false;
+        }
+
+        node = node.next as MeasurementValue | null;
+      }
+    } catch (error) {
+      console.error("レインフロー計算エラー:", error);
+    }
+
+    return rainDrops;
   }
 
   /**

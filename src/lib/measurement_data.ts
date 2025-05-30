@@ -80,4 +80,15 @@ export class MeasurementData {
             spot.extractPeaksAndValleys(threshold)
         }
     }
+
+    /**
+     * レインフロー法によるひずみ振幅の計算
+     * 
+     * アルゴリズムはASTM E1049-85に準拠
+     */
+    public calcRainDrop(): void {
+        for (const spot of this._spots) {
+            spot.calcDropRain();
+        }
+    }
 }
