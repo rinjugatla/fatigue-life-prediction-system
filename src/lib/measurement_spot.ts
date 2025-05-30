@@ -210,13 +210,13 @@ export class MeasurementSpot {
       cycleType: CycleType.FULL
     });
 
-    this.updateMaxRange(range);
-
     // 現在のレンジの点を削除（次の点と現在の点）
     if (node.next) {
       workingList.remove(node.next);
     }
     workingList.remove(node);
+
+    this.updateMaxRange(range);
   }
 
   /**
@@ -237,9 +237,9 @@ export class MeasurementSpot {
         cycleType: CycleType.HALF
       });
 
-      this.updateMaxRange(range);
-
       node = node.next as MeasurementValue | null;
+
+      this.updateMaxRange(range);
     }
   }
 
