@@ -97,19 +97,12 @@ export class MeasurementSpot {
     // リストが空または1点しかない場合は早期リターン
     if (this._list.size <= 1) { return; }
 
-    // 結果を格納する配列
     const rainDrops: RainDrop[] = [];
-    // 統計情報用オブジェクト
     const stats = { maxRange: 0, isMaxRangeCycle: true };
-
-    // リストのクローンを作成して作業する（元のデータを保持するため）
     const workingList = this.createWorkingList();
 
     try {
-      // 3点比較でレインフロー処理を行う
       this.processThreePointComparison(workingList, rainDrops, stats);
-
-      // 小ループ除去後の残りの点に対して0.5サイクルでレンジを計数
       this.processRemainingPoints(workingList, rainDrops, stats);
     } catch (error) {
       console.error("レインフロー計算エラー:", error);
