@@ -13,7 +13,7 @@ export const extractPeaksAndValleysAsync = async (measurementValues: Measurement
     // 空のリストや少ないポイント数の場合は早期リターン
     if (measurementValues.size === 0) { return null; }
 
-    const values = measurementValues.toArray().map(item => item as MeasurementValue);
+    const values = measurementValues.toArray().map(item => (item as MeasurementValue).clone());
     if (values.length <= 2) { return null; }
 
     // 結果を格納する配列

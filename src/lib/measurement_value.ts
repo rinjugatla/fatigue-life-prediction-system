@@ -10,4 +10,8 @@ export class MeasurementValue extends Item {
         super();
         this.value = value;
     }
+
+    clone = (): MeasurementValue => {
+        return new MeasurementValue(this.value);
+    }
 }
