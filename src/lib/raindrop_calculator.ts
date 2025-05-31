@@ -12,7 +12,7 @@ export const calculateRainDropsAsync = async (extractedPeaksAndValleys: Measurem
     if (extractedPeaksAndValleys.size <= 1) { return []; }
 
     const rainDrops: RainDrop[] = [];
-    const workingList = createWorkingList(extractedPeaksAndValleys);
+    const workingList = extractedPeaksAndValleys.clone();
 
     try {
         processThreePointComparison(workingList, rainDrops);
@@ -22,21 +22,6 @@ export const calculateRainDropsAsync = async (extractedPeaksAndValleys: Measurem
     }
 
     return rainDrops;
-}
-
-/**
- * 作業用のリストを作成する
- * @returns 作業用リスト
- */
-const createWorkingList = (extractedPeaksAndValleys: MeasurementList) => {
-    const workingList = new MeasurementList();
-    const values = extractedPeaksAndValleys.toArray().map(item => item as MeasurementValue);
-
-    for (const value of values) {
-        workingList.append(new MeasurementValue(value.value));
-    }
-
-    return workingList;
 }
 
 /**
