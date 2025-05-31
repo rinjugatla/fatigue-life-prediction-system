@@ -24,27 +24,20 @@ export class MeasurementData {
         this._spotStartColumnIndex = this._option.existsDatetimeColumn ? this._option.existsMillisecondColumn ? 2 : 1 : 0;
         this._spotColumnCount = lines[0].split(this._option.delimiter).length - this._spotStartColumnIndex;
 
-        this.initPoints(lines[0].split(this._option.delimiter));
-        this.readDataRows(lines)
+        this.prepareSpots(lines[0]);
+        this.readDataRows(lines);
     }
 
     /**
-     * 計測スポットの配列を初期化
-     * @param firstRowData 最初の行のデータ
+     * 計測位置の配列を準備
+     * 
+     * ヘッダーがある場合はここで計測位置名も設定
      */
-    private initPoints = (firstRowData: string[]) => {
-        const row = firstRowData.slice(this._spotStartColumnIndex, this._spotStartColumnIndex + this._spotColumnCount);
+    private prepareSpots = (firstLine: string) => {
+        const row = firstLine.split(this._option.delimiter).slice(this._spotStartColumnIndex, this._spotStartColumnIndex + this._spotColumnCount);
         for (let i = 0; i < this._spotColumnCount; i++) {
-            const label = this._option.existsHeaderRow ? row[i] : `Point ${i + 1}`;
+            const label = this._option.existsHeaderRow ? row[i] : `Spot ${i + 1}`;
             this._spots.push(new MeasurementSpot(label));
-        }
-
-        if (!this._option.existsHeaderRow) {
-            // ヘッダが存在しない場合は1行目から計測データを読み込む
-            for (let i = 0; i < this._spotColumnCount; i++) {
-                const value = parseFloat(row[i]);
-                this._spots[i].insertData(value);
-            }
         }
     }
 
@@ -53,7 +46,8 @@ export class MeasurementData {
      * @param lines 計測データの行
      */
     private readDataRows = (lines: string[]) => {
-        for (let rowIndex = 1; rowIndex < lines.length; rowIndex++) {
+        const dataLineStartIndex = this._option.existsHeaderRow ? 1 : 0;
+        for (let rowIndex = dataLineStartIndex; rowIndex < lines.length; rowIndex++) {
             const row = lines[rowIndex].split(this._option.delimiter).slice(this._spotStartColumnIndex, this._spotStartColumnIndex + this._spotColumnCount);
             const isSameCplumnCount = row.length === this._spotColumnCount;
             if (!isSameCplumnCount) {
@@ -65,9 +59,6 @@ export class MeasurementData {
                 const value = parseFloat(row[columnIndex]);
                 this._spots[columnIndex].insertData(value);
             }
-        }
-
-        if (this._option.existsHeaderRow) {
         }
     }
 
