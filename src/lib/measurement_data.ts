@@ -7,8 +7,8 @@ import { MeasurementSpot } from "./measurement_spot";
 export class MeasurementData {
     private _option: DataOption;
     private _spots: MeasurementSpot[] = [];
-    private _columnCount: number = 0;
-    private _dataStartColumnIndex: number = 0;
+    private _spotColumnCount: number = 0;
+    private _spotStartColumnIndex: number = 0;
 
     constructor(option: DataOption) {
         this._option = option;
@@ -21,8 +21,8 @@ export class MeasurementData {
     public read = (text: string) => {
         const lines = text.split(/\r\n|\n|\r/).map(line => line.trim()).filter(line => line.length > 0);
 
-        this._dataStartColumnIndex = this._option.existsDatetimeColumn ? this._option.existsMillisecondColumn ? 2 : 1 : 0;
-        this._columnCount = lines[0].split(this._option.delimiter).length;
+        this._spotStartColumnIndex = this._option.existsDatetimeColumn ? this._option.existsMillisecondColumn ? 2 : 1 : 0;
+        this._spotColumnCount = lines[0].split(this._option.delimiter).length - this._spotStartColumnIndex;
 
         this.initPoints(lines[0].split(this._option.delimiter));
         this.readDataRows(lines)
@@ -33,16 +33,17 @@ export class MeasurementData {
      * @param firstRowData 最初の行のデータ
      */
     private initPoints = (firstRowData: string[]) => {
-        for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
-            const label = this._option.existsHeaderRow ? firstRowData[i] : `Point ${i - this._dataStartColumnIndex + 1}`;
+        const row = firstRowData.slice(this._spotStartColumnIndex, this._spotStartColumnIndex + this._spotColumnCount);
+        for (let i = 0; i < this._spotColumnCount; i++) {
+            const label = this._option.existsHeaderRow ? row[i] : `Point ${i + 1}`;
             this._spots.push(new MeasurementSpot(label));
         }
 
         if (!this._option.existsHeaderRow) {
             // ヘッダが存在しない場合は1行目から計測データを読み込む
-            for (let i = this._dataStartColumnIndex; i < this._columnCount; i++) {
-                const value = parseFloat(firstRowData[i]);
-                this._spots[i - this._dataStartColumnIndex].insertData(value);
+            for (let i = 0; i < this._spotColumnCount; i++) {
+                const value = parseFloat(row[i]);
+                this._spots[i].insertData(value);
             }
         }
     }
@@ -53,16 +54,16 @@ export class MeasurementData {
      */
     private readDataRows = (lines: string[]) => {
         for (let rowIndex = 1; rowIndex < lines.length; rowIndex++) {
-            const rowData = lines[rowIndex].split(this._option.delimiter);
-            const isSameCplumnCount = rowData.length === this._columnCount;
+            const row = lines[rowIndex].split(this._option.delimiter).slice(this._spotStartColumnIndex, this._spotStartColumnIndex + this._spotColumnCount);
+            const isSameCplumnCount = row.length === this._spotColumnCount;
             if (!isSameCplumnCount) {
                 continue;
             }
 
             // 各計測ポイントにデータを挿入
-            for (let columnIndex = this._dataStartColumnIndex; columnIndex < this._columnCount; columnIndex++) {
-                const value = parseFloat(rowData[columnIndex]);
-                this._spots[columnIndex - this._dataStartColumnIndex].insertData(value);
+            for (let columnIndex = 0; columnIndex < this._spotColumnCount; columnIndex++) {
+                const value = parseFloat(row[columnIndex]);
+                this._spots[columnIndex].insertData(value);
             }
         }
 
