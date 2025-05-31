@@ -1,4 +1,5 @@
 import { List, Item } from "linked-list";
+import type { MeasurementValue } from "./measurement_value";
 
 /**
  * 計測値の双方向リスト
@@ -19,5 +20,16 @@ export class MeasurementList extends List {
         if (this.tail === item) this.tail = item.prev;
         item.prev = item.next = null;
         this.size--;
+    }
+
+    clone = () => {
+        const list = new MeasurementList();
+        super.toArray().map(item => list.append((item as MeasurementValue).clone()));
+        return list;
+    }
+
+    toArray = () : MeasurementValue[] => {
+        const array = super.toArray().map(item => (item as MeasurementValue).clone());
+        return array;
     }
 }
