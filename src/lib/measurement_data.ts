@@ -94,4 +94,18 @@ export class MeasurementData {
 
         await Promise.all(promises);
     }
+
+    /**
+     * 計測位置の統計情報を計算
+     */
+    public calcStatusAsync = async () => {
+        const promises = this._spots.map(spot => {
+            return new Promise<void>((resolve) => {
+                spot.calculateStatus();
+                resolve();
+            });
+        });
+
+        await Promise.all(promises);
+    }
 }

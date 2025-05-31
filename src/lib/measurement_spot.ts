@@ -1,4 +1,5 @@
 import { MeasurementList } from "./measurement_list";
+import type { MeasurementSpotStatus } from "./measurement_spot_status";
 import { MeasurementValue } from "./measurement_value";
 import { extractPeaksAndValleysAsync } from "./peak_extractor";
 import type { RainDrop } from "./rain_drop";
@@ -16,6 +17,19 @@ export class MeasurementSpot {
   private _extractedPeaksAndValleys: MeasurementList = new MeasurementList();
   /** レインフロー法による計算結果（振幅の範囲とサイクル数） */
   private _rainDrops: RainDrop[] = [];
+  /** 統計情報 */
+  private _status: MeasurementSpotStatus = {
+    measurementValueMax: 0,
+    measurementValueMin: 0,
+    measurementValueCount: 0,
+
+    peacksAndValleysCount: 0,
+
+    rainDropAmplitudeMax: 0,
+    rainDropAmplitudeMin: 0,
+    rainDropAmplitudeCount: 0,
+    rainDropAmplitudeCycleCount: 0,
+  };
 
   constructor(label: string) {
     this._label = label;
@@ -59,5 +73,26 @@ export class MeasurementSpot {
   public calculateRainDropsAsync = async (): Promise<void> => {
     const rainDrops = await calculateRainDropsAsync(this._extractedPeaksAndValleys);
     this._rainDrops = rainDrops;
+  }
+
+  /**
+   * 計測位置の統計情報を計算
+   */
+  public calculateStatus = () => {
+    const max = (a: number, b: number) => { return Math.max(a, b); };
+    const min = (a: number, b: number) => { return Math.min(a, b); };
+
+    const measurementValues = this._measurementValues.toArray().map(value => value.value);
+    this._status.measurementValueMax = measurementValues.reduce(max);
+    this._status.measurementValueMin = measurementValues.reduce(min);
+    this._status.measurementValueCount = measurementValues.length;
+
+    this._status.peacksAndValleysCount = this._extractedPeaksAndValleys.size;
+
+    const rainDropAmplitudes = this._rainDrops.map(drop => drop);
+    this._status.rainDropAmplitudeMax = rainDropAmplitudes.map(drop => drop.range).reduce(max);
+    this._status.rainDropAmplitudeMin = rainDropAmplitudes.map(drop => drop.range).reduce(min);
+    this._status.rainDropAmplitudeCount = rainDropAmplitudes.length
+    this._status.rainDropAmplitudeCycleCount = rainDropAmplitudes.map(drop => drop.cycleType).reduce((sum, type) => sum + type, 0);
   }
 }

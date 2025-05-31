@@ -63,6 +63,7 @@
 				// 並列処理を順番に実行
 				await data.extractPeaksAndValleysAsync();
 				await data.calcRainDropAsync();
+				await data.calcStatusAsync();
 				console.log(data);
 			} catch (error) {
 				console.error('解析エラー:', error);
