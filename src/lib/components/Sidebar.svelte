@@ -8,10 +8,9 @@
         existsDatetimeColumn,
         existsMillisecondColumn,
         analyzing,
-        errorMessage,
-        loadFile,
-        validateBeforeAnalyze
+        errorMessage
     } from '$lib/stores/measurement-store';
+    import { loadFile, validateBeforeAnalyze } from '$lib/services/file-service';
 
     // サイドバーの開閉を切り替える
     const toggleSidebar = () => {
