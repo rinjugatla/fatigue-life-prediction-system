@@ -3,8 +3,8 @@
 
 	// ファイル
 	let files: FileList | null = null;
-    // 区切り文字
-    let delimiter: ',' | '\t' = ',';
+	// 区切り文字
+	let delimiter: ',' | '\t' = ',';
 	// 文字エンコード
 	let encode = 'utf-8';
 	// ヘッダーがあるか
@@ -51,7 +51,7 @@
 		}
 
 		const file = files[0];
-        file.name.endsWith('.tsv') ? delimiter = '\t' : delimiter = ',';
+		file.name.endsWith('.tsv') ? (delimiter = '\t') : (delimiter = ',');
 
 		const reader = new FileReader();
 		reader.onload = async (e) => {
