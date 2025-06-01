@@ -56,7 +56,7 @@
         chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: histogramData.map((bin) => bin.center.toFixed(2)),
+                labels: histogramData.map((bin) => Math.floor(bin.max).toString()),
                 datasets: [
                     {
                         label: 'Frequency',
@@ -94,7 +94,7 @@
                                 if (items.length > 0) {
                                     const index = items[0].dataIndex;
                                     const bin = histogramData[index];
-                                    return `範囲: ${bin.min.toFixed(2)} - ${bin.max.toFixed(2)}`;
+                                    return `範囲: ${Math.floor(bin.min)} - ${Math.floor(bin.max)}`;
                                 }
                                 return '';
                             },
@@ -151,7 +151,7 @@
         if (!chart || histogramData.length === 0) return;
 
         // 更新によるアニメーション効果
-        chart.data.labels = histogramData.map((bin) => bin.center.toFixed(2));
+        chart.data.labels = histogramData.map((bin) => Math.floor(bin.max).toString());
         chart.data.datasets[0].data = histogramData.map((bin) => bin.count);
 
         // タイトルの更新
