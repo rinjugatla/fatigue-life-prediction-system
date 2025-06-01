@@ -30,13 +30,15 @@ export class HistogramCalculator {
             return [];
         }
 
-        // 最大値と最小値を計算
+        // 最大値の計算
         const ranges = rainDrops.map((drop) => drop.range);
-        const min = Math.min(...ranges);
         const max = Math.max(...ranges);
 
+        // 最小値は常に0から開始
+        const min = 0;
+
         // 区間数を計算
-        const binCount = Math.ceil((max - min) / binWidth);
+        const binCount = Math.ceil(max / binWidth);
 
         // 区間の初期化
         const bins: HistogramBin[] = Array(binCount)
@@ -54,7 +56,7 @@ export class HistogramCalculator {
 
         // 各レインドロップを適切な区間にカウント
         rainDrops.forEach((drop) => {
-            const binIndex = Math.floor((drop.range - min) / binWidth);
+            const binIndex = Math.floor(drop.range / binWidth);
             if (binIndex >= 0 && binIndex < bins.length) {
                 // サイクル種別を考慮したカウント
                 bins[binIndex].count += drop.cycleType;
