@@ -1,15 +1,19 @@
-import { MeasurementList } from "./measurement_list";
-import { MeasurementValue } from "./measurement_value";
-import { CycleType, type RainDrop } from "./rain_drop";
+import { MeasurementList } from './measurement_list';
+import { MeasurementValue } from './measurement_value';
+import { CycleType, type RainDrop } from './rain_drop';
 
 /**
  * レインフロー法によるひずみ振幅の計算
- * 
+ *
  * アルゴリズムはASTM E1049-85に準拠
  */
-export const calculateRainDropsAsync = async (extractedPeaksAndValleys: MeasurementList): Promise<RainDrop[]> => {
+export const calculateRainDropsAsync = async (
+    extractedPeaksAndValleys: MeasurementList
+): Promise<RainDrop[]> => {
     // リストが空または1点しかない場合は早期リターン
-    if (extractedPeaksAndValleys.size <= 1) { return []; }
+    if (extractedPeaksAndValleys.size <= 1) {
+        return [];
+    }
 
     const rainDrops: RainDrop[] = [];
     const workingList = extractedPeaksAndValleys.clone();
@@ -18,11 +22,11 @@ export const calculateRainDropsAsync = async (extractedPeaksAndValleys: Measurem
         processThreePointComparison(workingList, rainDrops);
         processRemainingPoints(workingList, rainDrops);
     } catch (error) {
-        console.error("レインフロー計算エラー:", error);
+        console.error('レインフロー計算エラー:', error);
     }
 
     return rainDrops;
-}
+};
 
 /**
  * 3点比較によるレインフロー処理
@@ -30,10 +34,7 @@ export const calculateRainDropsAsync = async (extractedPeaksAndValleys: Measurem
  * @param rainDrops 結果格納配列
  * @param stats 統計情報
  */
-const processThreePointComparison = (
-    workingList: MeasurementList,
-    rainDrops: RainDrop[]
-) => {
+const processThreePointComparison = (workingList: MeasurementList, rainDrops: RainDrop[]) => {
     let node = workingList.head as MeasurementValue | null;
 
     // 少なくとも3点あることを確認
@@ -64,11 +65,11 @@ const processThreePointComparison = (
             node = node.next as MeasurementValue | null;
         }
     }
-}
+};
 
 /**
  * 最初の点の振幅を記録
- * 
+ *
  * 0.5サイクルとして処理
  */
 const processFirstCycle = (
@@ -85,11 +86,11 @@ const processFirstCycle = (
 
     // 最初の点を削除
     workingList.remove(node);
-}
+};
 
 /**
  * 最初以外の点の振幅を記録
- * 
+ *
  * 1サイクルとして処理
  */
 const processFullCycle = (
@@ -109,15 +110,12 @@ const processFullCycle = (
         workingList.remove(node.next);
     }
     workingList.remove(node);
-}
+};
 
 /**
  * 残りの点の処理
  */
-const processRemainingPoints = (
-    workingList: MeasurementList,
-    rainDrops: RainDrop[]
-) => {
+const processRemainingPoints = (workingList: MeasurementList, rainDrops: RainDrop[]) => {
     let node = workingList.head as MeasurementValue | null;
     while (node && node.next) {
         const currentNode = node as MeasurementValue;
@@ -131,4 +129,4 @@ const processRemainingPoints = (
 
         node = node.next as MeasurementValue | null;
     }
-}
+};

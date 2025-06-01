@@ -1,4 +1,4 @@
-import { Item } from "linked-list";
+import { Item } from 'linked-list';
 
 /**
  * 計測値
@@ -13,5 +13,5 @@ export class MeasurementValue extends Item {
 
     clone = (): MeasurementValue => {
         return new MeasurementValue(this.value);
-    }
+    };
 }

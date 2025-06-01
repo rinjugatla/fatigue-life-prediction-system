@@ -1,19 +1,23 @@
-import { MeasurementList } from "./measurement_list";
-import type { MeasurementValue } from "./measurement_value";
+import { MeasurementList } from './measurement_list';
+import type { MeasurementValue } from './measurement_value';
 
 /**
-   * 波形の最大値と最小値のみを残し、その他のポイントを排除
-   * 波形の上昇/下降が変化する点（極値）を検出し、それ以外の点を排除します
-   * 
-   * @param measurementValues 処理対象の計測値リスト
-   * @returns 処理後の波形ポイント数
-   */
+ * 波形の最大値と最小値のみを残し、その他のポイントを排除
+ * 波形の上昇/下降が変化する点（極値）を検出し、それ以外の点を排除します
+ *
+ * @param measurementValues 処理対象の計測値リスト
+ * @returns 処理後の波形ポイント数
+ */
 export const extractPeaksAndValleysAsync = async (measurementValues: MeasurementList) => {
     // 空のリストや少ないポイント数の場合は早期リターン
-    if (measurementValues.size === 0) { return null; }
+    if (measurementValues.size === 0) {
+        return null;
+    }
 
     const values = measurementValues.toArray();
-    if (values.length <= 2) { return null; }
+    if (values.length <= 2) {
+        return null;
+    }
 
     // 結果を格納する配列
     const extremePoints: MeasurementValue[] = [];
@@ -48,10 +52,12 @@ export const extractPeaksAndValleysAsync = async (measurementValues: Measurement
 
         // 最後の点は常に含める（前回の極値と十分に異なる場合）
         const isLast = i === values.length - 1;
-        if (isLast) { extremePoints.push(values[i]); }
+        if (isLast) {
+            extremePoints.push(values[i]);
+        }
     }
 
     var extractedPeak = new MeasurementList();
-    extremePoints.forEach(point => extractedPeak.append(point));
+    extremePoints.forEach((point) => extractedPeak.append(point));
     return extractedPeak;
-}
+};

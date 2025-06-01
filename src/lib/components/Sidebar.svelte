@@ -1,115 +1,167 @@
 <script lang="ts">
-	import {
-		isSidebarOpen,
-		files,
-		encode,
-		measurementValueThreshold,
-		existsHeaderRow,
-		existsDatetimeColumn,
-		existsMillisecondColumn,
-		analyzing,
-		errorMessage,
-		loadFile,
-		validateBeforeAnalyze
-	} from '$lib/stores/measurement-store';
+    import {
+        isSidebarOpen,
+        files,
+        encode,
+        measurementValueThreshold,
+        existsHeaderRow,
+        existsDatetimeColumn,
+        existsMillisecondColumn,
+        analyzing,
+        errorMessage,
+        loadFile,
+        validateBeforeAnalyze
+    } from '$lib/stores/measurement-store';
 
-	// サイドバーの開閉を切り替える
-	const toggleSidebar = () => {
-		$isSidebarOpen = !$isSidebarOpen;
-	};
+    // サイドバーの開閉を切り替える
+    const toggleSidebar = () => {
+        $isSidebarOpen = !$isSidebarOpen;
+    };
 
-	// 解析処理の実行
-	const analyze = () => {
-		if (validateBeforeAnalyze()) {
-			loadFile();
-		}
-	};
+    // 解析処理の実行
+    const analyze = () => {
+        if (validateBeforeAnalyze()) {
+            loadFile();
+        }
+    };
 </script>
 
-<div class="sidebar-container relative {$isSidebarOpen ? 'w-80' : 'w-12'} transition-all duration-300 ease-in-out">
-	<div class="sidebar-toggle absolute -right-3 top-4 z-10">
-		<button 
-			class="btn btn-circle btn-sm bg-primary text-white shadow-lg" 
-			on:click={toggleSidebar}
-			aria-label={$isSidebarOpen ? 'サイドバーを閉じる' : 'サイドバーを開く'}
-		>
-			{#if $isSidebarOpen}
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-				</svg>
-			{:else}
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
-			{/if}
-		</button>
-	</div>
-	
-	<div class="sidebar-content h-full overflow-y-auto bg-base-200 p-4 {$isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}">
-		<h2 class="mb-4 text-xl font-bold">Fatigue data</h2>
-		
-		<form>
-			<fieldset class="mb-4">
-				<legend class="mb-2 font-medium">Data file(csv, tsv)</legend>
-				<input type="file" class="file-input w-full mb-3" accept=".csv,.tsv" bind:files={$files} />
+<div
+    class="sidebar-container relative {$isSidebarOpen
+        ? 'w-80'
+        : 'w-12'} transition-all duration-300 ease-in-out"
+>
+    <div class="sidebar-toggle absolute top-4 -right-3 z-10">
+        <button
+            class="btn btn-circle btn-sm bg-primary text-white shadow-lg"
+            on:click={toggleSidebar}
+            aria-label={$isSidebarOpen ? 'サイドバーを閉じる' : 'サイドバーを開く'}
+        >
+            {#if $isSidebarOpen}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                    />
+                </svg>
+            {:else}
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                    />
+                </svg>
+            {/if}
+        </button>
+    </div>
 
-				<select class="select w-full mb-3" bind:value={$encode}>
-					<option disabled>Encode</option>
-					<option value="utf-8">UTF-8</option>
-					<option value="sjis">SJIS</option>
-				</select>
-			</fieldset>
+    <div
+        class="sidebar-content bg-base-200 h-full overflow-y-auto p-4 {$isSidebarOpen
+            ? 'opacity-100'
+            : 'pointer-events-none opacity-0'}"
+    >
+        <h2 class="mb-4 text-xl font-bold">Fatigue data</h2>
 
-			<fieldset class="mb-4">
-				<legend class="mb-2 font-medium">Threshold for extreme value extraction</legend>
-				<input
-					type="number"
-					class="input w-full"
-					placeholder="0.001"
-					bind:value={$measurementValueThreshold}
-				/>
-			</fieldset>
+        <form>
+            <fieldset class="mb-4">
+                <legend class="mb-2 font-medium">Data file(csv, tsv)</legend>
+                <input
+                    type="file"
+                    class="file-input mb-3 w-full"
+                    accept=".csv,.tsv"
+                    bind:files={$files}
+                />
 
-			<div class="options mb-4">
-				<label class="label cursor-pointer">
-					<span>Exists header row</span>
-					<input type="checkbox" bind:checked={$existsHeaderRow} class="checkbox checkbox-primary" />
-				</label>
+                <select class="select mb-3 w-full" bind:value={$encode}>
+                    <option disabled>Encode</option>
+                    <option value="utf-8">UTF-8</option>
+                    <option value="sjis">SJIS</option>
+                </select>
+            </fieldset>
 
-				<label class="label cursor-pointer">
-					<span>Exists datetime column</span>
-					<input type="checkbox" bind:checked={$existsDatetimeColumn} class="checkbox checkbox-primary" />
-				</label>
+            <fieldset class="mb-4">
+                <legend class="mb-2 font-medium">Threshold for extreme value extraction</legend>
+                <input
+                    type="number"
+                    class="input w-full"
+                    placeholder="0.001"
+                    bind:value={$measurementValueThreshold}
+                />
+            </fieldset>
 
-				<label class="label cursor-pointer">
-					<span>Exists millisecond column</span>
-					<input type="checkbox" bind:checked={$existsMillisecondColumn} class="checkbox checkbox-primary" />
-				</label>
-			</div>
+            <div class="options mb-4">
+                <label class="label cursor-pointer">
+                    <span>Exists header row</span>
+                    <input
+                        type="checkbox"
+                        bind:checked={$existsHeaderRow}
+                        class="checkbox checkbox-primary"
+                    />
+                </label>
 
-			<div class="analyze-btn-container mb-4">
-				<button class="btn btn-primary w-full" on:click={analyze} disabled={$analyzing} type="button">
-					{$analyzing ? 'Analyzing...' : 'Analyze'}
-				</button>
-				{#if $errorMessage}
-					<div role="alert" class="alert alert-error p-2 mt-2">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-6 w-6 shrink-0 stroke-current"
-							fill="none"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
-						<span>{$errorMessage}</span>
-					</div>
-				{/if}
-			</div>
-		</form>
-	</div>
+                <label class="label cursor-pointer">
+                    <span>Exists datetime column</span>
+                    <input
+                        type="checkbox"
+                        bind:checked={$existsDatetimeColumn}
+                        class="checkbox checkbox-primary"
+                    />
+                </label>
+
+                <label class="label cursor-pointer">
+                    <span>Exists millisecond column</span>
+                    <input
+                        type="checkbox"
+                        bind:checked={$existsMillisecondColumn}
+                        class="checkbox checkbox-primary"
+                    />
+                </label>
+            </div>
+
+            <div class="analyze-btn-container mb-4">
+                <button
+                    class="btn btn-primary w-full"
+                    on:click={analyze}
+                    disabled={$analyzing}
+                    type="button"
+                >
+                    {$analyzing ? 'Analyzing...' : 'Analyze'}
+                </button>
+                {#if $errorMessage}
+                    <div role="alert" class="alert alert-error mt-2 p-2">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 shrink-0 stroke-current"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
+                        <span>{$errorMessage}</span>
+                    </div>
+                {/if}
+            </div>
+        </form>
+    </div>
 </div>

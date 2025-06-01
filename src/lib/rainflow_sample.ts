@@ -1,5 +1,5 @@
-import type { DataOption } from "./data_option";
-import { MeasurementData } from "./measurement_data";
+import type { DataOption } from './data_option';
+import { MeasurementData } from './measurement_data';
 
 /**
  * レインフローアルゴリズムのサンプル使用方法
@@ -7,8 +7,8 @@ import { MeasurementData } from "./measurement_data";
 export function rainflowSampleUsage(rawData: string): void {
     // データオプションの設定
     const options: DataOption = {
-        delimiter: ",",            // CSVファイルの区切り文字
-        existsHeaderRow: true,     // ヘッダー行が存在する
+        delimiter: ',', // CSVファイルの区切り文字
+        existsHeaderRow: true, // ヘッダー行が存在する
         existsDatetimeColumn: true, // 日時列が存在する
         existsMillisecondColumn: false // ミリ秒列は存在しない
     };
@@ -23,7 +23,7 @@ export function rainflowSampleUsage(rawData: string): void {
     // レインフロー法による計算
     measurementData.calcRainDropAsync();
 
-    console.log("レインフロー計算が完了しました");
+    console.log('レインフロー計算が完了しました');
 }
 
 /**
@@ -31,7 +31,7 @@ export function rainflowSampleUsage(rawData: string): void {
  */
 export function generateSampleData(): string {
     // ヘッダー行
-    let data = "時間,計測点1,計測点2\n";
+    let data = '時間,計測点1,計測点2\n';
 
     // サイン波＋ノイズデータを生成
     for (let i = 0; i < 100; i++) {

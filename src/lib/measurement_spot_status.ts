@@ -18,4 +18,4 @@ export type MeasurementSpotStatus = {
     rainDropAmplitudeCount: number;
     /** レインフロー法による振幅のサイクル数 */
     rainDropAmplitudeCycleCount: number;
-}
+};

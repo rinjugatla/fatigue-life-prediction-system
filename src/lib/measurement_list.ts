@@ -1,5 +1,5 @@
-import { List, Item } from "linked-list";
-import type { MeasurementValue } from "./measurement_value";
+import { List, Item } from 'linked-list';
+import type { MeasurementValue } from './measurement_value';
 
 /**
  * 計測値の双方向リスト
@@ -7,7 +7,7 @@ import type { MeasurementValue } from "./measurement_value";
 export class MeasurementList extends List {
     join = (delimiter: string) => {
         return this.toArray().join(delimiter);
-    }
+    };
 
     /**
      * リストからアイテムを削除します
@@ -20,16 +20,16 @@ export class MeasurementList extends List {
         if (this.tail === item) this.tail = item.prev;
         item.prev = item.next = null;
         this.size--;
-    }
+    };
 
     clone = () => {
         const list = new MeasurementList();
-        super.toArray().map(item => list.append((item as MeasurementValue).clone()));
+        super.toArray().map((item) => list.append((item as MeasurementValue).clone()));
         return list;
-    }
+    };
 
-    toArray = () : MeasurementValue[] => {
-        const array = super.toArray().map(item => (item as MeasurementValue).clone());
+    toArray = (): MeasurementValue[] => {
+        const array = super.toArray().map((item) => (item as MeasurementValue).clone());
         return array;
-    }
+    };
 }

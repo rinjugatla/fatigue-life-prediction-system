@@ -1,4 +1,4 @@
-import type { DataOption } from "./data_option";
+import type { DataOption } from './data_option';
 
 class DataRow {
     // 計測日時
@@ -12,7 +12,7 @@ class DataRow {
         const values = text.split(option.delimiter);
 
         let valueStartIndex = 0;
-        if (option.existsDatetimeColumn){
+        if (option.existsDatetimeColumn) {
             this._Datetime = new Date(values[0]);
             valueStartIndex++;
         }
