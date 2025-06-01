@@ -1,5 +1,6 @@
 import type { DataOption } from "./data_option";
 import { MeasurementSpot } from "./measurement_spot";
+import type { MeasurementValue } from "./measurement_value";
 
 /**
  * 計測データ(csv, tsv)を読み込むクラス
@@ -57,6 +58,12 @@ export class MeasurementData {
             // 各計測ポイントにデータを挿入
             for (let columnIndex = 0; columnIndex < this._spotColumnCount; columnIndex++) {
                 const value = parseFloat(row[columnIndex]);
+
+                // 同値の除外
+                const lastValue = this._spots[columnIndex].list.tail as MeasurementValue | null;
+                const isSamePrevValue = lastValue && Math.abs(lastValue.value - value) <= this._option.measurementValueThreshold;
+                if (isSamePrevValue) { continue; }
+
                 this._spots[columnIndex].insertData(value);
             }
         }
@@ -64,13 +71,12 @@ export class MeasurementData {
 
     /**
      * 計測値から極値（ピークと谷）を抽出
-     * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
      * @returns Promise<MeasurementSpot[]> 抽出された極値を持つ計測スポットの配列
      */
-    public extractPeaksAndValleysAsync = async (threshold: number = 0.001) => {
+    public extractPeaksAndValleysAsync = async () => {
         const promises = this._spots.map(spot => {
             return new Promise<void>((resolve) => {
-                spot.extractPeaksAndValleysAsync(threshold);
+                spot.extractPeaksAndValleysAsync();
                 resolve();
             });
         });

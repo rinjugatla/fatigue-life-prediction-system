@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MeasurementData } from "$lib/measurement_data";
+	import { MeasurementData } from '$lib/measurement_data';
 
 	// ファイル
 	let files: FileList | null = null;
@@ -7,6 +7,8 @@
 	let delimiter: ',' | '\t' = ',';
 	// 文字エンコード
 	let encode = 'utf-8';
+	// 測定値の閾値
+	let measurementValueThreshold = '0.001';
 	// ヘッダーがあるか
 	let existsHeaderRow = false;
 	// 日時列があるか
@@ -56,9 +58,15 @@
 		const reader = new FileReader();
 		reader.onload = async (e) => {
 			fileContent = e.target?.result as string;
-			const data = new MeasurementData({delimiter, existsHeaderRow, existsDatetimeColumn, existsMillisecondColumn});
+			const data = new MeasurementData({
+				delimiter,
+				existsHeaderRow,
+				existsDatetimeColumn,
+				existsMillisecondColumn,
+				measurementValueThreshold: parseFloat(measurementValueThreshold)
+			});
 			data.read(fileContent);
-			
+
 			try {
 				// 並列処理を順番に実行
 				await data.extractPeaksAndValleysAsync();
@@ -89,6 +97,16 @@
 			<option value="utf-8">UTF-8</option>
 			<option value="sjis">SJIS</option>
 		</select>
+
+		<fieldset class="fieldset">
+			<legend class="fieldset-legend">Threshold for extreme value extraction</legend>
+			<input
+				type="number"
+				class="input"
+				placeholder="0.001"
+				bind:value={measurementValueThreshold}
+			/>
+		</fieldset>
 
 		<label class="label">
 			<input type="checkbox" bind:checked={existsHeaderRow} class="checkbox" />

@@ -55,11 +55,9 @@ export class MeasurementSpot {
 
   /**
    * 計測値から極致を抽出(非同期)
-   * 
-   * @param threshold 同値とみなす閾値。この値以下の変化は無視されます。デフォルトは0.001
    */
-  public extractPeaksAndValleysAsync = async (threshold: number = 0.001): Promise<void> => {
-    const extracted = await extractPeaksAndValleysAsync(this._measurementValues, threshold);
+  public extractPeaksAndValleysAsync = async (): Promise<void> => {
+    const extracted = await extractPeaksAndValleysAsync(this._measurementValues);
     if (!extracted) { return; }
 
     this._extractedPeaksAndValleys = extracted;

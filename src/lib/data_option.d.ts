@@ -11,5 +11,5 @@ export type DataOption = {
      * 
      * 重複値除去の際に使用、この値以内は同じ値とみなす
      */
-    measurementValuesThreshold: number;
+    measurementValueThreshold: number;
 }
