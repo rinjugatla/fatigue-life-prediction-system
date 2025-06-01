@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { MeasurementData } from '$lib/measurement_data';
+	import HistogramChart from '$lib/components/HistogramChart.svelte';
 
 	// ファイル
 	let files: FileList | null = null;
@@ -21,6 +22,12 @@
 	let errorMessage = '';
 	// 解析中か(解析が長い場合に連続でボタンを押させないため)
 	let analyzing = false;
+	// 解析結果
+	let measurementData: MeasurementData | null = null;
+	// 選択中の計測スポットインデックス
+	let selectedSpotIndex = 0;
+	// ヒストグラムの区間幅
+	let histogramBinWidth = 10;
 
 	const analyze = () => {
 		const hasError = errorHandler();
@@ -73,6 +80,10 @@
 				await data.calcRainDropAsync();
 				await data.calcStatusAsync();
 				console.log(data);
+				
+				// 解析結果を保存
+				measurementData = data;
+				selectedSpotIndex = 0; // 最初のスポットを選択
 			} catch (error) {
 				console.error('解析エラー:', error);
 				errorMessage = '解析中にエラーが発生しました';
@@ -146,3 +157,68 @@
 		{/if}
 	</fieldset>
 </form>
+
+{#if measurementData && measurementData.spots.length > 0}
+	<div class="histogram-container bg-base-200 border-base-300 rounded-box border p-4 mt-4">
+		<h2 class="text-xl font-bold mb-4">Rain Drop Histogram</h2>
+		
+		<div class="controls mb-4">
+			<label class="label font-medium">スポット選択:</label>
+			<select 
+				class="select w-full mb-4" 
+				bind:value={selectedSpotIndex}
+			>
+				{#each measurementData.spots as spot, i}
+					<option value={i}>{spot.label}</option>
+				{/each}
+			</select>
+			
+			<label class="label font-medium">ヒストグラム区間幅:</label>
+			<div class="flex items-center gap-4">
+				<input 
+					type="range" 
+					min="1" 
+					max="50" 
+					step="1" 
+					class="range range-primary flex-grow" 
+					bind:value={histogramBinWidth}
+				/>
+				<div class="w-16">
+					<input 
+						type="number" 
+						min="1" 
+						class="input input-bordered w-full" 
+						bind:value={histogramBinWidth}
+					/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="chart-wrapper">
+			<HistogramChart 
+				rainDrops={measurementData.spots[selectedSpotIndex].rainDrops} 
+				binWidth={histogramBinWidth}
+				title={`${measurementData.spots[selectedSpotIndex].label} - Rain Drop Histogram`}
+			/>
+		</div>
+		
+		<div class="stats mt-4 grid grid-cols-1 md:grid-cols-2 gap-2">
+			<div class="stat bg-base-100 rounded-box p-4">
+				<div class="stat-title">総サイクル数</div>
+				<div class="stat-value">
+					{measurementData.spots[selectedSpotIndex].rainDrops
+						.reduce((acc, drop) => acc + drop.cycleType, 0)
+						.toFixed(1)}
+				</div>
+			</div>
+			<div class="stat bg-base-100 rounded-box p-4">
+				<div class="stat-title">最大振幅</div>
+				<div class="stat-value">
+					{measurementData.spots[selectedSpotIndex].rainDrops.length > 0
+						? Math.max(...measurementData.spots[selectedSpotIndex].rainDrops.map(drop => drop.range)).toFixed(2)
+						: 0}
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}

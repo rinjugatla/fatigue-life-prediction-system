@@ -2,3 +2,35 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 @plugin "daisyui";
+
+/* カスタムスタイル */
+.chart-animation {
+  transition: all 0.5s ease-in-out;
+}
+
+.chart-container canvas {
+  transition: opacity 0.3s ease;
+}
+
+/* 画面サイズに応じたレスポンシブ調整 */
+@media (max-width: 768px) {
+  .histogram-container {
+    padding: 1rem;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+}
+
+/* データ読み込み中のアニメーション */
+.loading-animation {
+  opacity: 0.7;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.7; }
+}

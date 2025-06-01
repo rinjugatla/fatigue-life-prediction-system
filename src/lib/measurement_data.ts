@@ -114,4 +114,11 @@ export class MeasurementData {
 
         await Promise.all(promises);
     }
+
+    /**
+     * 計測スポットの配列を取得
+     */
+    public get spots(): MeasurementSpot[] {
+        return this._spots;
+    }
 }

@@ -45,6 +45,11 @@ export class MeasurementSpot {
     return this._measurementValues;
   }
 
+  /** レインドロップデータを取得 */
+  public get rainDrops(): RainDrop[] {
+    return this._rainDrops;
+  }
+
   /**
    * 計測値を最後に追加
    * @param value 計測値
