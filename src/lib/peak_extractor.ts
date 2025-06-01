@@ -24,7 +24,6 @@ export const extractPeaksAndValleysAsync = async (measurementValues: Measurement
     // 初期値の設定
     extremePoints.push(values[0]);
     let prevDirection: Direction = 'none';
-    let lastExtreme = values[0].value;
 
     // 各ポイントを調査
     for (let i = 1; i < values.length; i++) {
@@ -42,7 +41,6 @@ export const extractPeaksAndValleysAsync = async (measurementValues: Measurement
         if (isPeak || isValley) {
             const extremeCandidate = values[i - 1];
             extremePoints.push(extremeCandidate);
-            lastExtreme = extremeCandidate.value;
         }
 
         // 方向の更新
