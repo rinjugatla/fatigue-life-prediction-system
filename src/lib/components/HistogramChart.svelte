@@ -75,13 +75,17 @@
 					easing: 'easeOutQuart' // アニメーションイージング
 				},
 				plugins: {
-					title: {
-						display: true,
+					title: {						display: true,
 						text: title,
 						font: {
-							size: 16
+							size: 18,
+							weight: 'bold'
 						},
-						color: textColor
+						color: textColor,
+						padding: {
+							top: 10,
+							bottom: 20
+						}
 					},
 					tooltip: {
 						callbacks: {
@@ -96,6 +100,13 @@
 							label: (item) => {
 								return `頻度: ${item.parsed.y.toFixed(2)}`;
 							}
+						},
+						padding: 10,
+						titleFont: {
+							size: 14
+						},
+						bodyFont: {
+							size: 14
 						}
 					},
 					legend: {
@@ -147,20 +158,21 @@
 			chart.options.plugins.title.text = title;
 		}
 		
-		chart.update('active'); // アニメーションのトランジションモードを'active'に設定
-	}
+		chart.update('active'); // アニメーションのトランジションモードを'active'に設定	
+    }
 </script>
 
-<div class="chart-container" style="position: relative; height: 400px; width: 100%;">
+<div class="chart-container" style="position: relative; height: 100%; width: 100%;">
 	<canvas bind:this={chartCanvas}></canvas>
 </div>
 
 <style>
 	.chart-container {
-		margin: 1rem 0;
 		padding: 0.5rem;
 		background-color: #fff;
 		border-radius: 0.5rem;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		min-height: 400px;
+		height: 100%;
 	}
 </style>

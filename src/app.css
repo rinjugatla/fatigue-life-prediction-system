@@ -3,7 +3,25 @@
 @plugin '@tailwindcss/typography';
 @plugin "daisyui";
 
-/* カスタムスタイル */
+/* ベーススタイル */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* サイドバースタイル */
+.sidebar-container {
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.sidebar-content {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* チャートアニメーション */
 .chart-animation {
   transition: all 0.5s ease-in-out;
 }
@@ -12,10 +30,28 @@
   transition: opacity 0.3s ease;
 }
 
+/* フルスクリーンレイアウト */
+.app-container {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.main-content {
+  transition: padding-left 0.3s ease-in-out;
+  height: 100vh;
+}
+
 /* 画面サイズに応じたレスポンシブ調整 */
 @media (max-width: 768px) {
-  .histogram-container {
-    padding: 1rem;
+  .sidebar-container {
+    position: absolute;
+    height: 100%;
+    z-index: 100;
+  }
+  
+  .sidebar-toggle {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
   
   .chart-container {
