@@ -106,30 +106,30 @@
 
             <div class="options mb-4">
                 <label class="label cursor-pointer">
-                    <span>ヘッダーが存在する</span>
                     <input
                         type="checkbox"
                         bind:checked={$existsHeaderRow}
-                        class="checkbox checkbox-primary"
+                        class="checkbox checkbox-primary mr-2"
                     />
+                    <span>ヘッダーが存在する</span>
                 </label>
 
                 <label class="label cursor-pointer">
-                    <span>日時列が存在する</span>
                     <input
                         type="checkbox"
                         bind:checked={$existsDatetimeColumn}
-                        class="checkbox checkbox-primary"
+                        class="checkbox checkbox-primary mr-2"
                     />
+                    <span>日時列が存在する</span>
                 </label>
 
                 <label class="label cursor-pointer">
-                    <span>ミリ秒列が存在する</span>
                     <input
                         type="checkbox"
                         bind:checked={$existsMillisecondColumn}
-                        class="checkbox checkbox-primary"
+                        class="checkbox checkbox-primary mr-2"
                     />
+                    <span>ミリ秒列が存在する</span>
                 </label>
             </div>
 
