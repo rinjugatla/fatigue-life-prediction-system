@@ -1,6 +1,9 @@
 <script lang="ts">
     import HistogramChart from './HistogramChart.svelte';
     import SpotSelector from './SpotSelector.svelte';
+    import SpotStatistics from './SpotStatistics.svelte';
+    import BinWidthControl from './BinWidthControl.svelte';
+    import LogScaleToggle from './LogScaleToggle.svelte';
     import {
         measurementData,
         selectedSpotIndex,
@@ -14,99 +17,11 @@
     {#if $measurementData && $measurementData.spots.length > 0}
         <div class="histogram-container flex h-full flex-col">
             <div class="histogram-header mb-4 flex flex-wrap items-center justify-between gap-4">
-                <div class="stats-container flex items-center gap-4">
-                    <div class="stats-row flex flex-wrap gap-4">
-                        {#if $selectedSpotIndices.length === 0}
-                            <div class="stat bg-base-200 rounded-box p-3">
-                                <div class="stat-title text-sm">スポット選択</div>
-                                <div class="stat-value text-xl">未選択</div>
-                            </div>
-                        {:else if $selectedSpotIndices.length === 1}
-                            <div class="stat bg-base-200 rounded-box p-3">
-                                <div class="stat-title text-sm">総サイクル数</div>
-                                <div class="stat-value text-xl">
-                                    {$measurementData.spots[$selectedSpotIndices[0]].rainDrops
-                                        .reduce((acc, drop) => acc + drop.cycleType, 0)
-                                        .toFixed(1)}
-                                </div>
-                            </div>
-                            <div class="stat bg-base-200 rounded-box p-3">
-                                <div class="stat-title text-sm">最大振幅</div>
-                                <div class="stat-value text-xl">
-                                    {$measurementData.spots[$selectedSpotIndices[0]].rainDrops
-                                        .length > 0
-                                        ? Math.max(
-                                              ...$measurementData.spots[
-                                                  $selectedSpotIndices[0]
-                                              ].rainDrops.map((drop) => drop.range)
-                                          ).toFixed(2)
-                                        : 0}
-                                </div>
-                            </div>
-                        {:else}
-                            <div class="stat bg-base-200 rounded-box p-3">
-                                <div class="stat-title text-sm">選択スポット数</div>
-                                <div class="stat-value text-xl">
-                                    {$selectedSpotIndices.length}
-                                </div>
-                            </div>
-                            <div class="stat bg-base-200 rounded-box p-3">
-                                <div class="stat-title text-sm">合計サイクル数</div>
-                                <div class="stat-value text-xl">
-                                    {$selectedSpotIndices
-                                        .reduce(
-                                            (acc, spotIndex) =>
-                                                acc +
-                                                $measurementData.spots[spotIndex].rainDrops.reduce(
-                                                    (spotAcc, drop) => spotAcc + drop.cycleType,
-                                                    0
-                                                ),
-                                            0
-                                        )
-                                        .toFixed(1)}
-                                </div>
-                            </div>
-                        {/if}
-                    </div>
-                </div>
+                <SpotStatistics />
                 <div class="controls flex flex-wrap items-center gap-4">
                     <SpotSelector />
-                    <div class="bin-width-control flex flex-col">
-                        <label for="bin-width" class="label font-medium">ヒストグラム区間幅:</label>
-                        <div class="flex items-center gap-2">
-                            <input
-                                id="bin-width-range"
-                                type="range"
-                                min="1"
-                                max="50"
-                                step="1"
-                                class="range range-primary w-40"
-                                bind:value={$histogramBinWidth}
-                                aria-labelledby="bin-width"
-                            />
-                            <div class="w-16">
-                                <input
-                                    id="bin-width"
-                                    type="number"
-                                    min="1"
-                                    class="input input-bordered w-full"
-                                    bind:value={$histogramBinWidth}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="log-scale-control flex items-center gap-2">
-                        <label for="log-scale" class="label cursor-pointer font-medium">
-                            <span class="label-text mr-2">対数表示</span>
-                            <input
-                                id="log-scale"
-                                type="checkbox"
-                                class="toggle toggle-primary"
-                                bind:checked={$useLogScale}
-                            />
-                        </label>
-                    </div>
+                    <BinWidthControl />
+                    <LogScaleToggle />
                 </div>
             </div>
             <div class="chart-wrapper min-h-[400px] flex-1">
