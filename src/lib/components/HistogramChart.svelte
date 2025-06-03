@@ -17,18 +17,18 @@
     let chart: Chart | undefined;
     let histogramDataSets: { histogramData: HistogramBin[]; label: string; color: string }[] = [];
 
-    // 色のパレット
+    // 色のパレット - 暗い背景に映える鮮やかな色
     const colorPalette = [
-        'rgba(75, 192, 192, 0.6)',   // ティール
-        'rgba(255, 99, 132, 0.6)',   // ピンク
-        'rgba(54, 162, 235, 0.6)',   // ブルー
-        'rgba(255, 206, 86, 0.6)',   // イエロー
-        'rgba(153, 102, 255, 0.6)',  // パープル
-        'rgba(255, 159, 64, 0.6)',   // オレンジ
-        'rgba(201, 203, 207, 0.6)',  // グレー
-        'rgba(0, 204, 150, 0.6)',    // グリーン
-        'rgba(255, 0, 0, 0.6)',      // レッド
-        'rgba(0, 0, 255, 0.6)'       // ディープブルー
+        'rgba(0, 220, 220, 0.7)',   // ティール
+        'rgba(255, 105, 180, 0.7)',  // ホットピンク
+        'rgba(64, 224, 208, 0.7)',   // ターコイズ
+        'rgba(255, 215, 0, 0.7)',    // ゴールド
+        'rgba(138, 43, 226, 0.7)',   // ブルーバイオレット
+        'rgba(255, 140, 0, 0.7)',    // ダークオレンジ
+        'rgba(173, 255, 47, 0.7)',   // グリーンイエロー
+        'rgba(32, 178, 170, 0.7)',   // ライトシーグリーン
+        'rgba(220, 20, 60, 0.7)',    // クリムゾン
+        'rgba(30, 144, 255, 0.7)'    // ドジャーブルー
     ];
 
     // ヒストグラムデータの計算
@@ -65,10 +65,9 @@
         const ctx = chartCanvas.getContext('2d');
         if (!ctx) return;
 
-        // ダークモード対応のための色設定
-        const isDarkMode = document.documentElement.classList.contains('dark');
-        const textColor = isDarkMode ? '#e2e8f0' : '#475569';
-        const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        // 暗いテーマ用の色設定
+        const textColor = '#e2e8f0';
+        const gridColor = 'rgba(255, 255, 255, 0.1)';
 
         // 以前のチャートを破棄
         if (chart) {
@@ -142,7 +141,10 @@
                         },
                         bodyFont: {
                             size: 14
-                        }
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff'
                     },
                     legend: {
                         display: true,
@@ -234,9 +236,9 @@
 <style>
     .chart-container {
         padding: 0.5rem;
-        background-color: #fff;
+        background-color: #1e293b; /* 暗い背景色 */
         border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         min-height: 400px;
         height: 100%;
     }
