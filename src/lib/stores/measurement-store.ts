@@ -6,7 +6,8 @@ export const isSidebarOpen = writable(true);
 
 // 計測データと関連状態
 export const measurementData = writable<MeasurementData | null>(null);
-export const selectedSpotIndex = writable(0);
+export const selectedSpotIndex = writable(0); // 互換性のために残す
+export const selectedSpotIndices = writable<number[]>([0]); // 複数スポット選択用
 export const histogramBinWidth = writable(10);
 
 // 入力フォームの状態

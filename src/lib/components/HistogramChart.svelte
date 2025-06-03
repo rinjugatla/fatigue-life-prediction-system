@@ -8,19 +8,41 @@
     Chart.register(...registerables);
 
     // プロパティ
-    export let rainDrops: RainDrop[] = [];
+    export let datasets: { rainDrops: RainDrop[]; label: string; color?: string }[] = [];
     export let binWidth: number = 10;
     export let title: string = 'ひずみ頻度分布';
 
     // 内部変数
     let chartCanvas: HTMLCanvasElement;
     let chart: Chart | undefined;
-    let histogramData: HistogramBin[] = [];
+    let histogramDataSets: { histogramData: HistogramBin[]; label: string; color: string }[] = [];
+
+    // 色のパレット
+    const colorPalette = [
+        'rgba(75, 192, 192, 0.6)',   // ティール
+        'rgba(255, 99, 132, 0.6)',   // ピンク
+        'rgba(54, 162, 235, 0.6)',   // ブルー
+        'rgba(255, 206, 86, 0.6)',   // イエロー
+        'rgba(153, 102, 255, 0.6)',  // パープル
+        'rgba(255, 159, 64, 0.6)',   // オレンジ
+        'rgba(201, 203, 207, 0.6)',  // グレー
+        'rgba(0, 204, 150, 0.6)',    // グリーン
+        'rgba(255, 0, 0, 0.6)',      // レッド
+        'rgba(0, 0, 255, 0.6)'       // ディープブルー
+    ];
 
     // ヒストグラムデータの計算
     $: {
-        if (rainDrops && rainDrops.length > 0 && binWidth > 0) {
-            histogramData = HistogramCalculator.calculate(rainDrops, binWidth);
+        if (datasets && datasets.length > 0 && binWidth > 0) {
+            histogramDataSets = datasets.map((dataset, index) => {
+                const histogramData = HistogramCalculator.calculate(dataset.rainDrops, binWidth);
+                const color = dataset.color || colorPalette[index % colorPalette.length];
+                return {
+                    histogramData,
+                    label: dataset.label,
+                    color
+                };
+            });
             updateChart();
         }
     }
@@ -53,19 +75,34 @@
             chart.destroy();
         }
 
+        // 全データセットの最大値を見つけてX軸の範囲を決定
+        let allBins: number[] = [];
+        histogramDataSets.forEach(dataset => {
+            dataset.histogramData.forEach(bin => {
+                allBins.push(Math.floor(bin.max));
+            });
+        });
+        const uniqueBins = [...new Set(allBins)].sort((a, b) => a - b);
+
         chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: histogramData.map((bin) => Math.floor(bin.max).toString()),
-                datasets: [
-                    {
-                        label: 'Frequency',
-                        data: histogramData.map((bin) => bin.count),
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                labels: uniqueBins.map(bin => bin.toString()),
+                datasets: histogramDataSets.map((dataset, index) => {
+                    // 各ビンの値をデータセットに合わせて設定
+                    const data = uniqueBins.map(binMax => {
+                        const bin = dataset.histogramData.find(b => Math.floor(b.max) === binMax);
+                        return bin ? bin.count : 0;
+                    });
+                    
+                    return {
+                        label: dataset.label,
+                        data: data,
+                        backgroundColor: dataset.color,
+                        borderColor: dataset.color.replace('0.6', '1'), // 境界線はより濃く
                         borderWidth: 1
-                    }
-                ]
+                    };
+                })
             },
             options: {
                 responsive: true,
@@ -92,14 +129,11 @@
                         callbacks: {
                             title: (items) => {
                                 if (items.length > 0) {
-                                    const index = items[0].dataIndex;
-                                    const bin = histogramData[index];
-                                    return `範囲: ${Math.floor(bin.min)} - ${Math.floor(bin.max)}`;
+                                    const binValue = parseInt(items[0].label);
+                                    const prevBin = binValue - binWidth;
+                                    return `範囲: ${prevBin} - ${binValue}`;
                                 }
                                 return '';
-                            },
-                            label: (item) => {
-                                return `頻度: ${item.parsed.y.toFixed(2)}`;
                             }
                         },
                         padding: 10,
@@ -111,7 +145,14 @@
                         }
                     },
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12
+                            },
+                            color: textColor
+                        }
                     }
                 },
                 scales: {
@@ -148,11 +189,34 @@
     }
     // チャートの更新
     function updateChart() {
-        if (!chart || histogramData.length === 0) return;
+        if (!chart || histogramDataSets.length === 0) return;
+
+        // 全データセットの最大値を見つけてX軸の範囲を決定
+        let allBins: number[] = [];
+        histogramDataSets.forEach(dataset => {
+            dataset.histogramData.forEach(bin => {
+                allBins.push(Math.floor(bin.max));
+            });
+        });
+        const uniqueBins = [...new Set(allBins)].sort((a, b) => a - b);
 
         // 更新によるアニメーション効果
-        chart.data.labels = histogramData.map((bin) => Math.floor(bin.max).toString());
-        chart.data.datasets[0].data = histogramData.map((bin) => bin.count);
+        chart.data.labels = uniqueBins.map(bin => bin.toString());
+        chart.data.datasets = histogramDataSets.map((dataset, index) => {
+            // 各ビンの値をデータセットに合わせて設定
+            const data = uniqueBins.map(binMax => {
+                const bin = dataset.histogramData.find(b => Math.floor(b.max) === binMax);
+                return bin ? bin.count : 0;
+            });
+            
+            return {
+                label: dataset.label,
+                data: data,
+                backgroundColor: dataset.color,
+                borderColor: dataset.color.replace('0.6', '1'), // 境界線はより濃く
+                borderWidth: 1
+            };
+        });
 
         // タイトルの更新
         if (chart.options && chart.options.plugins && chart.options.plugins.title) {
