@@ -21,7 +21,7 @@
                   : `${$selectedSpotIndices.length} スポットを選択中`}
         </div>
         <div
-            tabindex="1"
+            tabindex="-1"
             class="dropdown-content menu bg-base-100 rounded-box z-[1] max-h-60 w-full overflow-y-auto p-2 shadow"
         >
             {#if $measurementData && $measurementData.spots}
