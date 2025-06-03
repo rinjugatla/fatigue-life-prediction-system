@@ -1,18 +1,47 @@
 <script lang="ts">
     import HistogramChart from './HistogramChart.svelte';
-    import { measurementData, selectedSpotIndex, histogramBinWidth } from '$lib/stores/measurement-store';
+    import {
+        measurementData,
+        selectedSpotIndex,
+        histogramBinWidth
+    } from '$lib/stores/measurement-store';
 </script>
 
 <div class="main-content flex-1 overflow-y-auto p-4">
     {#if $measurementData && $measurementData.spots.length > 0}
         <div class="histogram-container flex h-full flex-col">
             <div class="histogram-header mb-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="stats-container flex items-center gap-4">
+                    <div class="stats-row flex gap-4">
+                        <div class="stat bg-base-200 rounded-box p-3">
+                            <div class="stat-title text-sm">総サイクル数</div>
+                            <div class="stat-value text-xl">
+                                {$measurementData.spots[$selectedSpotIndex].rainDrops
+                                    .reduce((acc, drop) => acc + drop.cycleType, 0)
+                                    .toFixed(1)}
+                            </div>
+                        </div>
+                        <div class="stat bg-base-200 rounded-box p-3">
+                            <div class="stat-title text-sm">最大振幅</div>
+                            <div class="stat-value text-xl">
+                                {$measurementData.spots[$selectedSpotIndex].rainDrops.length > 0
+                                    ? Math.max(
+                                          ...$measurementData.spots[
+                                              $selectedSpotIndex
+                                          ].rainDrops.map((drop) => drop.range)
+                                      ).toFixed(2)
+                                    : 0}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="controls flex flex-wrap items-center gap-4">
                     <div class="spot-select">
                         <label for="spot-select" class="label font-medium">スポット選択:</label>
-                        <select 
-                            id="spot-select" 
-                            class="select select-bordered" 
+                        <select
+                            id="spot-select"
+                            class="select select-bordered"
                             bind:value={$selectedSpotIndex}
                         >
                             {#if $measurementData && $measurementData.spots}
@@ -50,34 +79,11 @@
                 </div>
             </div>
 
-            <div class="stats mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-                <div class="stat bg-base-200 rounded-box p-3">
-                    <div class="stat-title text-sm">総サイクル数</div>
-                    <div class="stat-value text-xl">
-                        {$measurementData.spots[$selectedSpotIndex].rainDrops
-                            .reduce((acc, drop) => acc + drop.cycleType, 0)
-                            .toFixed(1)}
-                    </div>
-                </div>
-                <div class="stat bg-base-200 rounded-box p-3">
-                    <div class="stat-title text-sm">最大振幅</div>
-                    <div class="stat-value text-xl">
-                        {$measurementData.spots[$selectedSpotIndex].rainDrops.length > 0
-                            ? Math.max(
-                                  ...$measurementData.spots[$selectedSpotIndex].rainDrops.map(
-                                      (drop) => drop.range
-                                  )
-                              ).toFixed(2)
-                            : 0}
-                    </div>
-                </div>
-            </div>
-
             <div class="chart-wrapper min-h-[400px] flex-1">
                 <HistogramChart
                     rainDrops={$measurementData.spots[$selectedSpotIndex].rainDrops}
                     binWidth={$histogramBinWidth}
-                    title={`${$measurementData.spots[$selectedSpotIndex].label} - ひずみ頻度分布`}  
+                    title={`${$measurementData.spots[$selectedSpotIndex].label} - ひずみ頻度分布`}
                 />
             </div>
         </div>
@@ -99,9 +105,7 @@
                     ></path>
                 </svg>
                 <p class="mb-2 text-2xl">データが読み込まれていません</p>
-                <p class="text-lg">
-                    左側のサイドバーからデータをアップロードして解析してください
-                </p>
+                <p class="text-lg">左側のサイドバーからデータをアップロードして解析してください</p>
             </div>
         </div>
     {/if}
