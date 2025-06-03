@@ -98,5 +98,40 @@ describe('RainDropCalculator', () => {
         const maxRange = Math.max(...rainDrops.map(drop => drop.range));
         const expectedMaxRange = 43.39179993 - (-25.46910095); // 最大値 - 最小値
         expect(maxRange).toBeCloseTo(expectedMaxRange, 5);
+    });    test('should calculate raindrops using data from data_header_short.tsv', async () => {
+        // data_header_short.tsvからデータを読み取り
+        const values = [
+            2.594074965, -25.46910095, 43.39179993, 32.54384995, -126.873848, -70.0400238, -43.39179993, -46.45752716
+        ];
+        values.forEach(v => peaksAndValleys.append(new MeasurementValue(v)));
+
+        const rainDrops = await calculateRainDropsAsync(peaksAndValleys);
+
+        // レインドロップが計算されること
+        expect(rainDrops.length).toBeGreaterThan(0);
+
+        // 各レインドロップが適切な構造を持つこと
+        rainDrops.forEach(drop => {
+            expect(drop).toHaveProperty('range');
+            expect(drop).toHaveProperty('cycleType');
+            expect(typeof drop.range).toBe('number');
+            expect([CycleType.FULL, CycleType.HALF]).toContain(drop.cycleType);
+        });
+
+        // 実行結果を正解データとして比較
+        const expectedRainDrops: RainDrop[] = [
+            { range: 28.063175915000002, cycleType: 0.5 },
+            { range: 10.847949979999996, cycleType: 1 },
+            { range: 101.40474705, cycleType: 0.5 },
+            { range: 56.833824199999995, cycleType: 0.5 },
+            { range: 26.648223870000002, cycleType: 0.5 },
+            { range: 3.0657272300000002, cycleType: 0.5 }
+        ];
+        expect(rainDrops).toEqual(expectedRainDrops);
+
+        // 最大振幅を確認
+        const maxRange = Math.max(...rainDrops.map(drop => drop.range));
+        // 注: 最大振幅はデータの最大値-最小値と必ずしも一致しない
+        expect(maxRange).toBe(101.40474705);
     });
 });
