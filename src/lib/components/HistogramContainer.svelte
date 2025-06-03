@@ -7,8 +7,6 @@
     {#if $measurementData && $measurementData.spots.length > 0}
         <div class="histogram-container flex h-full flex-col">
             <div class="histogram-header mb-4 flex flex-wrap items-center justify-between gap-4">
-                <h2 class="text-2xl font-bold">Rain Drop Histogram</h2>
-
                 <div class="controls flex flex-wrap items-center gap-4">
                     <div class="spot-select">
                         <label for="spot-select" class="label font-medium">スポット選択:</label>
@@ -79,7 +77,7 @@
                 <HistogramChart
                     rainDrops={$measurementData.spots[$selectedSpotIndex].rainDrops}
                     binWidth={$histogramBinWidth}
-                    title={`${$measurementData.spots[$selectedSpotIndex].label} - Rain Drop Histogram`}
+                    title={`${$measurementData.spots[$selectedSpotIndex].label} - ひずみ頻度分布`}  
                 />
             </div>
         </div>

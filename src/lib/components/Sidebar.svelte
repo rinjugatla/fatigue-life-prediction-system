@@ -75,11 +75,11 @@
             ? 'opacity-100'
             : 'pointer-events-none opacity-0'}"
     >
-        <h2 class="mb-4 text-xl font-bold">Fatigue data</h2>
+        <h2 class="mb-4 text-xl font-bold">ひずみデータ</h2>
 
         <form>
             <fieldset class="mb-4">
-                <legend class="mb-2 font-medium">Data file(csv, tsv)</legend>
+                <legend class="mb-2 font-medium">ファイル(csv, tsv)</legend>
                 <input
                     type="file"
                     class="file-input mb-3 w-full"
@@ -88,14 +88,14 @@
                 />
 
                 <select class="select mb-3 w-full" bind:value={$encode}>
-                    <option disabled>Encode</option>
+                    <option disabled>文字エンコード</option>
                     <option value="utf-8">UTF-8</option>
                     <option value="sjis">SJIS</option>
                 </select>
             </fieldset>
 
             <fieldset class="mb-4">
-                <legend class="mb-2 font-medium">Threshold for extreme value extraction</legend>
+                <legend class="mb-2 font-medium">計測値を同値とみなす閾値</legend>
                 <input
                     type="number"
                     class="input w-full"
@@ -106,7 +106,7 @@
 
             <div class="options mb-4">
                 <label class="label cursor-pointer">
-                    <span>Exists header row</span>
+                    <span>ヘッダーが存在する</span>
                     <input
                         type="checkbox"
                         bind:checked={$existsHeaderRow}
@@ -115,7 +115,7 @@
                 </label>
 
                 <label class="label cursor-pointer">
-                    <span>Exists datetime column</span>
+                    <span>日時列が存在する</span>
                     <input
                         type="checkbox"
                         bind:checked={$existsDatetimeColumn}
@@ -124,7 +124,7 @@
                 </label>
 
                 <label class="label cursor-pointer">
-                    <span>Exists millisecond column</span>
+                    <span>ミリ秒列が存在する</span>
                     <input
                         type="checkbox"
                         bind:checked={$existsMillisecondColumn}
@@ -140,7 +140,7 @@
                     disabled={$analyzing}
                     type="button"
                 >
-                    {$analyzing ? 'Analyzing...' : 'Analyze'}
+                    {$analyzing ? '解析中...' : '解析'}
                 </button>
                 {#if $errorMessage}
                     <div role="alert" class="alert alert-error mt-2 p-2">

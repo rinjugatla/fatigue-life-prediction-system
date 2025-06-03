@@ -10,7 +10,7 @@
     // プロパティ
     export let rainDrops: RainDrop[] = [];
     export let binWidth: number = 10;
-    export let title: string = 'Rain Drop Histogram';
+    export let title: string = 'ひずみ頻度分布';
 
     // 内部変数
     let chartCanvas: HTMLCanvasElement;
