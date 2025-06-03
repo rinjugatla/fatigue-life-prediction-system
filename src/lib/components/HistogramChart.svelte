@@ -11,6 +11,7 @@
     export let datasets: { rainDrops: RainDrop[]; label: string; color?: string }[] = [];
     export let binWidth: number = 10;
     export let title: string = 'ひずみ頻度分布';
+    export let useLogScale: boolean = false;
 
     // 内部変数
     let chartCanvas: HTMLCanvasElement;
@@ -44,6 +45,32 @@
                 };
             });
             updateChart();
+        }
+    }
+
+    // 対数スケールが変更されたときにチャートを更新
+    $: if (chart) {
+        if (chart.options && chart.options.scales && chart.options.scales.y) {
+            chart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
+            chart.options.scales.y.min = useLogScale ? 1 : 0;
+            chart.options.scales.y.beginAtZero = !useLogScale;
+            
+            // 対数スケール時のティックコールバックを更新
+            if (chart.options.scales.y.ticks) {
+                chart.options.scales.y.ticks.callback = function(value, index, values) {
+                    if (useLogScale) {
+                        // 10の乗数の場合はそのまま表示
+                        if (Math.log10(value) % 1 === 0) {
+                            return value.toString();
+                        }
+                        // それ以外は表示しない
+                        return '';
+                    }
+                    return value;
+                };
+            }
+            
+            chart.update();
         }
     }
 
@@ -91,6 +118,13 @@
                     // 各ビンの値をデータセットに合わせて設定
                     const data = uniqueBins.map(binMax => {
                         const bin = dataset.histogramData.find(b => Math.floor(b.max) === binMax);
+                        // 対数スケールの場合、0や小さな値は1に置き換える
+                        if (useLogScale) {
+                            if (!bin || bin.count === 0) {
+                                return 1; // 対数スケールで最小値を1に設定
+                            }
+                            return Math.max(bin.count, 1); // 1未満の値も1に設定
+                        }
                         return bin ? bin.count : 0;
                     });
                     
@@ -172,7 +206,9 @@
                         }
                     },
                     y: {
-                        beginAtZero: true,
+                        type: useLogScale ? 'logarithmic' : 'linear',
+                        beginAtZero: !useLogScale, // 対数スケールの場合はゼロから始めない
+                        min: useLogScale ? 1 : 0, // 対数スケールの場合は最小値を1に設定
                         title: {
                             display: true,
                             text: '頻度 (サイクル)',
@@ -182,7 +218,18 @@
                             color: gridColor
                         },
                         ticks: {
-                            color: textColor
+                            color: textColor,
+                            callback: function(value, index, values) {
+                                if (useLogScale) {
+                                    // 10の乗数の場合はそのまま表示
+                                    if (Math.log10(value) % 1 === 0) {
+                                        return value.toString();
+                                    }
+                                    // それ以外は表示しない
+                                    return '';
+                                }
+                                return value;
+                            }
                         }
                     }
                 }
@@ -208,6 +255,13 @@
             // 各ビンの値をデータセットに合わせて設定
             const data = uniqueBins.map(binMax => {
                 const bin = dataset.histogramData.find(b => Math.floor(b.max) === binMax);
+                // 対数スケールの場合、0や小さな値は1に置き換える
+                if (useLogScale) {
+                    if (!bin || bin.count === 0) {
+                        return 1; // 対数スケールで最小値を1に設定
+                    }
+                    return Math.max(bin.count, 1); // 1未満の値も1に設定
+                }
                 return bin ? bin.count : 0;
             });
             
@@ -223,6 +277,28 @@
         // タイトルの更新
         if (chart.options && chart.options.plugins && chart.options.plugins.title) {
             chart.options.plugins.title.text = title;
+        }
+
+        // スケールタイプの更新
+        if (chart.options && chart.options.scales && chart.options.scales.y) {
+            chart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
+            chart.options.scales.y.beginAtZero = !useLogScale;
+            chart.options.scales.y.min = useLogScale ? 1 : 0;
+            
+            // 対数スケール時のティックコールバックを更新
+            if (chart.options.scales.y.ticks) {
+                chart.options.scales.y.ticks.callback = function(value, index, values) {
+                    if (useLogScale) {
+                        // 10の乗数の場合はそのまま表示
+                        if (Math.log10(value) % 1 === 0) {
+                            return value.toString();
+                        }
+                        // それ以外は表示しない
+                        return '';
+                    }
+                    return value;
+                };
+            }
         }
 
         chart.update('active'); // アニメーションのトランジションモードを'active'に設定

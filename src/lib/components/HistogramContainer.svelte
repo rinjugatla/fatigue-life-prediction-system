@@ -5,7 +5,8 @@
         measurementData,
         selectedSpotIndex,
         selectedSpotIndices,
-        histogramBinWidth
+        histogramBinWidth,
+        useLogScale
     } from '$lib/stores/measurement-store';
 </script>
 
@@ -62,9 +63,7 @@
                         {/if}
                     </div>
                 </div>                <div class="controls flex flex-wrap items-center gap-4">
-                    <SpotSelector />
-
-                    <div class="bin-width-control flex flex-col">
+                    <SpotSelector />                    <div class="bin-width-control flex flex-col">
                         <label for="bin-width" class="label font-medium">ヒストグラム区間幅:</label>
                         <div class="flex items-center gap-2">
                             <input
@@ -88,6 +87,18 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="log-scale-control flex items-center gap-2">
+                        <label for="log-scale" class="label cursor-pointer font-medium">
+                            <span class="label-text mr-2">対数表示</span>
+                            <input
+                                id="log-scale"
+                                type="checkbox"
+                                class="toggle toggle-primary"
+                                bind:checked={$useLogScale}
+                            />
+                        </label>
+                    </div>
                 </div>
             </div>            <div class="chart-wrapper min-h-[400px] flex-1">
                 {#if $selectedSpotIndices.length === 0}
@@ -110,13 +121,13 @@
                             <p class="text-xl">表示するスポットを選択してください</p>
                         </div>
                     </div>
-                {:else}
-                    <HistogramChart
+                {:else}                    <HistogramChart
                         datasets={$selectedSpotIndices.map(index => ({
                             rainDrops: $measurementData.spots[index].rainDrops,
                             label: $measurementData.spots[index].label
                         }))}
                         binWidth={$histogramBinWidth}
+                        useLogScale={$useLogScale}
                         title={$selectedSpotIndices.length === 1 
                             ? `${$measurementData.spots[$selectedSpotIndices[0]].label} - ひずみ頻度分布`
                             : "複数スポット - ひずみ頻度分布比較"}
