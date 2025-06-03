@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import { HistogramCalculator } from './histogram_calculator';
-import { CycleType, type RainDrop } from './rain_drop';
+import { HistogramCalculator } from '../lib/histogram_calculator';
+import { CycleType, type RainDrop } from '../lib/rain_drop';
 
 describe('HistogramCalculator', () => {
     test('should handle empty raindrops array', () => {

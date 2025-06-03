@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { MeasurementValue } from './measurement_value';
+import { MeasurementValue } from '../lib/measurement_value';
 
 describe('MeasurementValue', () => {
     test('should create a MeasurementValue with the given value', () => {

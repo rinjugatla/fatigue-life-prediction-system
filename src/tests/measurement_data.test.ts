@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { MeasurementData } from './measurement_data';
-import type { DataOption } from './data_option';
+import { MeasurementData } from '../lib/measurement_data';
+import type { DataOption } from '../lib/data_option';
 
 describe('MeasurementData', () => {
     let measurementData: MeasurementData;

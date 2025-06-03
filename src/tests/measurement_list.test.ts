@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import { MeasurementList } from './measurement_list';
-import { MeasurementValue } from './measurement_value';
+import { MeasurementList } from '../lib/measurement_list';
+import { MeasurementValue } from '../lib/measurement_value';
 
 describe('MeasurementList', () => {
     test('should create an empty list', () => {

@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MeasurementList } from './measurement_list';
-import { MeasurementValue } from './measurement_value';
-import { calculateRainDropsAsync } from './raindrop_calculator';
-import { type RainDrop, CycleType } from './rain_drop';
+import { MeasurementList } from '../lib/measurement_list';
+import { MeasurementValue } from '../lib/measurement_value';
+import { calculateRainDropsAsync } from '../lib/raindrop_calculator';
+import { type RainDrop, CycleType } from '../lib/rain_drop';
 
 describe('RainDropCalculator', () => {
     let peaksAndValleys: MeasurementList;

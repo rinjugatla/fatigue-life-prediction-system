@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MeasurementSpot } from './measurement_spot';
-import { MeasurementValue } from './measurement_value';
-import { CycleType } from './rain_drop';
+import { MeasurementSpot } from '../lib/measurement_spot';
+import { MeasurementValue } from '../lib/measurement_value';
+import { CycleType } from '../lib/rain_drop';
 
 describe('MeasurementSpot', () => {
     let spot: MeasurementSpot;

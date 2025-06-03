@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { MeasurementList } from './measurement_list';
-import { MeasurementValue } from './measurement_value';
-import { extractPeaksAndValleysAsync } from './peak_extractor';
+import { MeasurementList } from '../lib/measurement_list';
+import { MeasurementValue } from '../lib/measurement_value';
+import { extractPeaksAndValleysAsync } from '../lib/peak_extractor';
 
 describe('PeakExtractor', () => {
     let measurementValues: MeasurementList;
