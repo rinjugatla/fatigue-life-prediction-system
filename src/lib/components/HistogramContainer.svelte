@@ -1,5 +1,6 @@
 <script lang="ts">
     import HistogramChart from './HistogramChart.svelte';
+    import SpotSelector from './SpotSelector.svelte';
     import {
         measurementData,
         selectedSpotIndex,
@@ -60,67 +61,8 @@
                             </div>
                         {/if}
                     </div>
-                </div><div class="controls flex flex-wrap items-center gap-4">
-                    <div class="spot-select">
-                        <label for="spot-select" class="label font-medium">スポット選択:</label>
-                        <div class="dropdown w-64">
-                            <div tabindex="0" role="button" class="select select-bordered w-full">
-                                {$selectedSpotIndices.length === 0 
-                                    ? 'スポットを選択' 
-                                    : $selectedSpotIndices.length === 1 
-                                        ? $measurementData.spots[$selectedSpotIndices[0]].label
-                                        : `${$selectedSpotIndices.length} スポットを選択中`}
-                            </div>                            <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full max-h-60 overflow-y-auto">
-                                {#if $measurementData && $measurementData.spots}
-                                    <div class="flex justify-between mb-2 pb-2 border-b border-gray-200">
-                                        <button 
-                                            class="btn btn-xs btn-outline" 
-                                            on:click={() => {
-                                                $selectedSpotIndices = Array.from({ length: $measurementData.spots.length }, (_, i) => i);
-                                                if ($selectedSpotIndices.length > 0) {
-                                                    $selectedSpotIndex = $selectedSpotIndices[0];
-                                                }
-                                            }}
-                                        >
-                                            すべて選択
-                                        </button>
-                                        <button 
-                                            class="btn btn-xs btn-outline" 
-                                            on:click={() => {
-                                                $selectedSpotIndices = [];
-                                                $selectedSpotIndex = 0;
-                                            }}
-                                        >
-                                            すべて解除
-                                        </button>
-                                    </div>
-                                    {#each $measurementData.spots as spot, i}
-                                        <div class="form-control">
-                                            <label class="label cursor-pointer justify-start gap-2">
-                                                <input 
-                                                    type="checkbox" 
-                                                    class="checkbox checkbox-primary"
-                                                    checked={$selectedSpotIndices.includes(i)}
-                                                    on:change={() => {
-                                                        if ($selectedSpotIndices.includes(i)) {
-                                                            $selectedSpotIndices = $selectedSpotIndices.filter(idx => idx !== i);
-                                                        } else {
-                                                            $selectedSpotIndices = [...$selectedSpotIndices, i];
-                                                        }
-                                                        // 単一選択互換性のために
-                                                        if ($selectedSpotIndices.length > 0) {
-                                                            $selectedSpotIndex = $selectedSpotIndices[0];
-                                                        }
-                                                    }}
-                                                />
-                                                <span class="label-text">{spot.label}</span>
-                                            </label>
-                                        </div>
-                                    {/each}
-                                {/if}
-                            </div>
-                        </div>
-                    </div>
+                </div>                <div class="controls flex flex-wrap items-center gap-4">
+                    <SpotSelector />
 
                     <div class="bin-width-control flex flex-col">
                         <label for="bin-width" class="label font-medium">ヒストグラム区間幅:</label>
