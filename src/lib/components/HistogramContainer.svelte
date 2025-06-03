@@ -13,14 +13,13 @@
 <div class="main-content flex-1 overflow-y-auto p-4">
     {#if $measurementData && $measurementData.spots.length > 0}
         <div class="histogram-container flex h-full flex-col">
-            <div class="histogram-header mb-4 flex flex-wrap items-center justify-between gap-4">                <div class="stats-container flex items-center gap-4">
+            <div class="histogram-header mb-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="stats-container flex items-center gap-4">
                     <div class="stats-row flex flex-wrap gap-4">
                         {#if $selectedSpotIndices.length === 0}
                             <div class="stat bg-base-200 rounded-box p-3">
                                 <div class="stat-title text-sm">スポット選択</div>
-                                <div class="stat-value text-xl">
-                                    未選択
-                                </div>
+                                <div class="stat-value text-xl">未選択</div>
                             </div>
                         {:else if $selectedSpotIndices.length === 1}
                             <div class="stat bg-base-200 rounded-box p-3">
@@ -34,7 +33,8 @@
                             <div class="stat bg-base-200 rounded-box p-3">
                                 <div class="stat-title text-sm">最大振幅</div>
                                 <div class="stat-value text-xl">
-                                    {$measurementData.spots[$selectedSpotIndices[0]].rainDrops.length > 0
+                                    {$measurementData.spots[$selectedSpotIndices[0]].rainDrops
+                                        .length > 0
                                         ? Math.max(
                                               ...$measurementData.spots[
                                                   $selectedSpotIndices[0]
@@ -54,16 +54,24 @@
                                 <div class="stat-title text-sm">合計サイクル数</div>
                                 <div class="stat-value text-xl">
                                     {$selectedSpotIndices
-                                        .reduce((acc, spotIndex) => 
-                                            acc + $measurementData.spots[spotIndex].rainDrops
-                                                .reduce((spotAcc, drop) => spotAcc + drop.cycleType, 0), 0)
+                                        .reduce(
+                                            (acc, spotIndex) =>
+                                                acc +
+                                                $measurementData.spots[spotIndex].rainDrops.reduce(
+                                                    (spotAcc, drop) => spotAcc + drop.cycleType,
+                                                    0
+                                                ),
+                                            0
+                                        )
                                         .toFixed(1)}
                                 </div>
                             </div>
                         {/if}
                     </div>
-                </div>                <div class="controls flex flex-wrap items-center gap-4">
-                    <SpotSelector />                    <div class="bin-width-control flex flex-col">
+                </div>
+                <div class="controls flex flex-wrap items-center gap-4">
+                    <SpotSelector />
+                    <div class="bin-width-control flex flex-col">
                         <label for="bin-width" class="label font-medium">ヒストグラム区間幅:</label>
                         <div class="flex items-center gap-2">
                             <input
@@ -100,7 +108,8 @@
                         </label>
                     </div>
                 </div>
-            </div>            <div class="chart-wrapper min-h-[400px] flex-1">
+            </div>
+            <div class="chart-wrapper min-h-[400px] flex-1">
                 {#if $selectedSpotIndices.length === 0}
                     <div class="flex h-full items-center justify-center">
                         <div class="text-center text-gray-500">
@@ -121,16 +130,17 @@
                             <p class="text-xl">表示するスポットを選択してください</p>
                         </div>
                     </div>
-                {:else}                    <HistogramChart
-                        datasets={$selectedSpotIndices.map(index => ({
+                {:else}
+                    <HistogramChart
+                        datasets={$selectedSpotIndices.map((index) => ({
                             rainDrops: $measurementData.spots[index].rainDrops,
                             label: $measurementData.spots[index].label
                         }))}
                         binWidth={$histogramBinWidth}
                         useLogScale={$useLogScale}
-                        title={$selectedSpotIndices.length === 1 
+                        title={$selectedSpotIndices.length === 1
                             ? `${$measurementData.spots[$selectedSpotIndices[0]].label} - ひずみ頻度分布`
-                            : "複数スポット - ひずみ頻度分布比較"}
+                            : '複数スポット - ひずみ頻度分布比較'}
                     />
                 {/if}
             </div>

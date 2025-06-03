@@ -15,7 +15,7 @@ describe('MeasurementList', () => {
 
         list.append(value1);
         expect(list.size).toBe(1);
-        
+
         list.append(value2);
         expect(list.size).toBe(2);
     });
@@ -24,14 +24,14 @@ describe('MeasurementList', () => {
         const list = new MeasurementList();
         const value1 = new MeasurementValue(10.5);
         const value2 = new MeasurementValue(-5.25);
-        
+
         list.append(value1);
         list.append(value2);
         expect(list.size).toBe(2);
-        
+
         list.remove(value1);
         expect(list.size).toBe(1);
-        
+
         // head should now be value2
         expect((list.head as MeasurementValue).value).toBe(-5.25);
     });
@@ -41,7 +41,7 @@ describe('MeasurementList', () => {
         list.append(new MeasurementValue(10.5));
         list.append(new MeasurementValue(-5.25));
         list.append(new MeasurementValue(0));
-        
+
         // MeasurementValueのvalueをカンマで結合
         const joined = list.join(',');
         expect(joined).toBe('10.5,-5.25,0');
@@ -51,19 +51,19 @@ describe('MeasurementList', () => {
         const originalList = new MeasurementList();
         originalList.append(new MeasurementValue(10.5));
         originalList.append(new MeasurementValue(-5.25));
-        
+
         const clonedList = originalList.clone();
-        
+
         // サイズが同じであること
         expect(clonedList.size).toBe(originalList.size);
-        
+
         // 別のオブジェクトであること
         expect(clonedList).not.toBe(originalList);
-        
+
         // 内容が同じであること
         const originalArray = originalList.toArray();
         const clonedArray = clonedList.toArray();
-        
+
         expect(clonedArray.length).toBe(originalArray.length);
         for (let i = 0; i < originalArray.length; i++) {
             expect(clonedArray[i].value).toBe(originalArray[i].value);
@@ -74,12 +74,12 @@ describe('MeasurementList', () => {
     test('should convert to array correctly', () => {
         const list = new MeasurementList();
         const values = [10.5, -5.25, 0, 3.75];
-        
-        values.forEach(v => list.append(new MeasurementValue(v)));
-        
+
+        values.forEach((v) => list.append(new MeasurementValue(v)));
+
         const array = list.toArray();
         expect(array.length).toBe(values.length);
-        
+
         for (let i = 0; i < values.length; i++) {
             expect(array[i].value).toBe(values[i]);
         }

@@ -6,7 +6,9 @@ import type { MeasurementValue } from './measurement_value';
  */
 export class MeasurementList extends List {
     join = (delimiter: string) => {
-        return this.toArray().map(item => (item as MeasurementValue).value).join(delimiter);
+        return this.toArray()
+            .map((item) => (item as MeasurementValue).value)
+            .join(delimiter);
     };
 
     /**

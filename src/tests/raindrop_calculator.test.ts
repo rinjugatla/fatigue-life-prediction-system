@@ -25,7 +25,7 @@ describe('RainDropCalculator', () => {
     test('should calculate raindrops for simple wave', async () => {
         // 単純な波形のピークと谷
         const values = [0, 10, -5, 5];
-        values.forEach(v => peaksAndValleys.append(new MeasurementValue(v)));
+        values.forEach((v) => peaksAndValleys.append(new MeasurementValue(v)));
 
         const rainDrops = await calculateRainDropsAsync(peaksAndValleys);
 
@@ -33,7 +33,7 @@ describe('RainDropCalculator', () => {
         expect(rainDrops.length).toBeGreaterThan(0);
 
         // 各レインドロップが適切な構造を持つこと
-        rainDrops.forEach(drop => {
+        rainDrops.forEach((drop) => {
             expect(drop).toHaveProperty('range');
             expect(drop).toHaveProperty('cycleType');
             expect(typeof drop.range).toBe('number');
@@ -41,16 +41,14 @@ describe('RainDropCalculator', () => {
         });
 
         // 振幅の値が正しいこと
-        const ranges = rainDrops.map(drop => drop.range);
+        const ranges = rainDrops.map((drop) => drop.range);
         expect(ranges).toContain(15); // 10 - (-5) = 15
     });
 
     test('should calculate raindrops for complex wave', async () => {
         // 複雑な波形のピークと谷
-        const values = [
-            0, 10, -5, 8, -3, 12, -8, 6, -2, 4, 0
-        ];
-        values.forEach(v => peaksAndValleys.append(new MeasurementValue(v)));
+        const values = [0, 10, -5, 8, -3, 12, -8, 6, -2, 4, 0];
+        values.forEach((v) => peaksAndValleys.append(new MeasurementValue(v)));
 
         const rainDrops = await calculateRainDropsAsync(peaksAndValleys);
         console.log(rainDrops);
@@ -59,8 +57,8 @@ describe('RainDropCalculator', () => {
         expect(rainDrops.length).toBeGreaterThan(0);
 
         // フルサイクルと0.5サイクルの両方が存在すること
-        const fullCycles = rainDrops.filter(drop => drop.cycleType === CycleType.FULL);
-        const halfCycles = rainDrops.filter(drop => drop.cycleType === CycleType.HALF);
+        const fullCycles = rainDrops.filter((drop) => drop.cycleType === CycleType.FULL);
+        const halfCycles = rainDrops.filter((drop) => drop.cycleType === CycleType.HALF);
 
         expect(fullCycles.length).toBeGreaterThan(0);
         expect(halfCycles.length).toBeGreaterThan(0);
@@ -84,10 +82,8 @@ describe('RainDropCalculator', () => {
 
     test('should calculate raindrops using real-world data', async () => {
         // data_header.tsvから抽出したピーク・谷データ
-        const values = [
-            2.594074965, -25.46910095, 43.39179993, 32.54384995
-        ];
-        values.forEach(v => peaksAndValleys.append(new MeasurementValue(v)));
+        const values = [2.594074965, -25.46910095, 43.39179993, 32.54384995];
+        values.forEach((v) => peaksAndValleys.append(new MeasurementValue(v)));
 
         const rainDrops = await calculateRainDropsAsync(peaksAndValleys);
 
@@ -95,17 +91,18 @@ describe('RainDropCalculator', () => {
         expect(rainDrops.length).toBeGreaterThan(0);
 
         // 最大振幅を確認
-        const maxRange = Math.max(...rainDrops.map(drop => drop.range));
-        const expectedMaxRange = 43.39179993 - (-25.46910095); // 最大値 - 最小値
+        const maxRange = Math.max(...rainDrops.map((drop) => drop.range));
+        const expectedMaxRange = 43.39179993 - -25.46910095; // 最大値 - 最小値
         expect(maxRange).toBeCloseTo(expectedMaxRange, 5);
     });
 
     test('should calculate raindrops using data from data_header_short.tsv', async () => {
         // data_header_short.tsvからデータを読み取り
         const values = [
-            2.594074965, -25.46910095, 43.39179993, 32.54384995, -126.873848, -70.0400238, -43.39179993, -46.45752716
+            2.594074965, -25.46910095, 43.39179993, 32.54384995, -126.873848, -70.0400238,
+            -43.39179993, -46.45752716
         ];
-        values.forEach(v => peaksAndValleys.append(new MeasurementValue(v)));
+        values.forEach((v) => peaksAndValleys.append(new MeasurementValue(v)));
 
         const rainDrops = await calculateRainDropsAsync(peaksAndValleys);
 
@@ -113,12 +110,12 @@ describe('RainDropCalculator', () => {
         expect(rainDrops.length).toBeGreaterThan(0);
 
         // 各レインドロップが適切な構造を持つこと
-        rainDrops.forEach(drop => {
+        rainDrops.forEach((drop) => {
             expect(drop).toHaveProperty('range');
             expect(drop).toHaveProperty('cycleType');
             expect(typeof drop.range).toBe('number');
             expect([CycleType.FULL, CycleType.HALF]).toContain(drop.cycleType);
-        });        // 実行結果を正解データとして比較（誤差を考慮）
+        }); // 実行結果を正解データとして比較（誤差を考慮）
         const expectedRainDrops: RainDrop[] = [
             { range: 28.063175915000002, cycleType: 0.5 },
             { range: 10.847949979999996, cycleType: 1 },
@@ -127,14 +124,14 @@ describe('RainDropCalculator', () => {
             { range: 26.648223870000002, cycleType: 0.5 },
             { range: 3.0657272300000002, cycleType: 0.5 }
         ];
-        
+
         // 誤差の閾値を0.001として比較
         expect(rainDrops.length).toBe(expectedRainDrops.length);
         rainDrops.forEach((drop, index) => {
             expect(drop.cycleType).toBe(expectedRainDrops[index].cycleType);
             expect(drop.range).toBeCloseTo(expectedRainDrops[index].range, 3); // 誤差0.001以内を許容
-        });        // 最大振幅を確認
-        const maxRange = Math.max(...rainDrops.map(drop => drop.range));
+        }); // 最大振幅を確認
+        const maxRange = Math.max(...rainDrops.map((drop) => drop.range));
         // 注: 最大振幅はデータの最大値-最小値と必ずしも一致しない
         expect(maxRange).toBeCloseTo(101.405, 3); // 誤差0.001以内を許容
     });

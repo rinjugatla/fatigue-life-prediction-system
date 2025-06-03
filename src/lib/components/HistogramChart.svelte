@@ -20,16 +20,16 @@
 
     // 色のパレット - 暗い背景に映える鮮やかな色
     const colorPalette = [
-        'rgba(0, 220, 220, 0.7)',   // ティール
-        'rgba(255, 105, 180, 0.7)',  // ホットピンク
-        'rgba(64, 224, 208, 0.7)',   // ターコイズ
-        'rgba(255, 215, 0, 0.7)',    // ゴールド
-        'rgba(138, 43, 226, 0.7)',   // ブルーバイオレット
-        'rgba(255, 140, 0, 0.7)',    // ダークオレンジ
-        'rgba(173, 255, 47, 0.7)',   // グリーンイエロー
-        'rgba(32, 178, 170, 0.7)',   // ライトシーグリーン
-        'rgba(220, 20, 60, 0.7)',    // クリムゾン
-        'rgba(30, 144, 255, 0.7)'    // ドジャーブルー
+        'rgba(0, 220, 220, 0.7)', // ティール
+        'rgba(255, 105, 180, 0.7)', // ホットピンク
+        'rgba(64, 224, 208, 0.7)', // ターコイズ
+        'rgba(255, 215, 0, 0.7)', // ゴールド
+        'rgba(138, 43, 226, 0.7)', // ブルーバイオレット
+        'rgba(255, 140, 0, 0.7)', // ダークオレンジ
+        'rgba(173, 255, 47, 0.7)', // グリーンイエロー
+        'rgba(32, 178, 170, 0.7)', // ライトシーグリーン
+        'rgba(220, 20, 60, 0.7)', // クリムゾン
+        'rgba(30, 144, 255, 0.7)' // ドジャーブルー
     ];
 
     // ヒストグラムデータの計算
@@ -53,10 +53,10 @@
         if (chart.options && chart.options.scales && chart.options.scales.y) {
             chart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
             chart.options.scales.y.min = useLogScale ? 1 : 0;
-            
+
             // 対数スケール時のティックコールバックを更新
             if (chart.options.scales.y.ticks) {
-                chart.options.scales.y.ticks.callback = function(value, index, values) {
+                chart.options.scales.y.ticks.callback = function (value, index, values) {
                     if (useLogScale) {
                         // 10の乗数の場合はそのまま表示
                         const numValue = typeof value === 'string' ? parseFloat(value) : value;
@@ -69,7 +69,7 @@
                     return value;
                 };
             }
-            
+
             chart.update();
         }
     }
@@ -103,8 +103,8 @@
 
         // 全データセットの最大値を見つけてX軸の範囲を決定
         let allBins: number[] = [];
-        histogramDataSets.forEach(dataset => {
-            dataset.histogramData.forEach(bin => {
+        histogramDataSets.forEach((dataset) => {
+            dataset.histogramData.forEach((bin) => {
                 allBins.push(Math.floor(bin.max));
             });
         });
@@ -113,11 +113,11 @@
         chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: uniqueBins.map(bin => bin.toString()),
+                labels: uniqueBins.map((bin) => bin.toString()),
                 datasets: histogramDataSets.map((dataset, index) => {
                     // 各ビンの値をデータセットに合わせて設定
-                    const data = uniqueBins.map(binMax => {
-                        const bin = dataset.histogramData.find(b => Math.floor(b.max) === binMax);
+                    const data = uniqueBins.map((binMax) => {
+                        const bin = dataset.histogramData.find((b) => Math.floor(b.max) === binMax);
                         // 対数スケールの場合、0や小さな値は1に置き換える
                         if (useLogScale) {
                             if (!bin || bin.count === 0) {
@@ -127,7 +127,7 @@
                         }
                         return bin ? bin.count : 0;
                     });
-                    
+
                     return {
                         label: dataset.label,
                         data: data,
@@ -220,10 +220,11 @@
                         },
                         ticks: {
                             color: textColor,
-                            callback: function(value, index, values) {
+                            callback: function (value, index, values) {
                                 if (useLogScale) {
                                     // 10の乗数の場合はそのまま表示
-                                    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                                    const numValue =
+                                        typeof value === 'string' ? parseFloat(value) : value;
                                     if (Math.log10(numValue) % 1 === 0) {
                                         return numValue.toString();
                                     }
@@ -244,19 +245,19 @@
 
         // 全データセットの最大値を見つけてX軸の範囲を決定
         let allBins: number[] = [];
-        histogramDataSets.forEach(dataset => {
-            dataset.histogramData.forEach(bin => {
+        histogramDataSets.forEach((dataset) => {
+            dataset.histogramData.forEach((bin) => {
                 allBins.push(Math.floor(bin.max));
             });
         });
         const uniqueBins = [...new Set(allBins)].sort((a, b) => a - b);
 
         // 更新によるアニメーション効果
-        chart.data.labels = uniqueBins.map(bin => bin.toString());
+        chart.data.labels = uniqueBins.map((bin) => bin.toString());
         chart.data.datasets = histogramDataSets.map((dataset, index) => {
             // 各ビンの値をデータセットに合わせて設定
-            const data = uniqueBins.map(binMax => {
-                const bin = dataset.histogramData.find(b => Math.floor(b.max) === binMax);
+            const data = uniqueBins.map((binMax) => {
+                const bin = dataset.histogramData.find((b) => Math.floor(b.max) === binMax);
                 // 対数スケールの場合、0や小さな値は1に置き換える
                 if (useLogScale) {
                     if (!bin || bin.count === 0) {
@@ -266,7 +267,7 @@
                 }
                 return bin ? bin.count : 0;
             });
-            
+
             return {
                 label: dataset.label,
                 data: data,
@@ -285,10 +286,10 @@
         if (chart.options && chart.options.scales && chart.options.scales.y) {
             chart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
             chart.options.scales.y.min = useLogScale ? 1 : 0;
-            
+
             // 対数スケール時のティックコールバックを更新
             if (chart.options.scales.y.ticks) {
-                chart.options.scales.y.ticks.callback = function(value, index, values) {
+                chart.options.scales.y.ticks.callback = function (value, index, values) {
                     if (useLogScale) {
                         // 10の乗数の場合はそのまま表示
                         const numValue = typeof value === 'string' ? parseFloat(value) : value;
