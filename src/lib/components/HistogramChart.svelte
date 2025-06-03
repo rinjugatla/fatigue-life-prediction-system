@@ -53,15 +53,15 @@
         if (chart.options && chart.options.scales && chart.options.scales.y) {
             chart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
             chart.options.scales.y.min = useLogScale ? 1 : 0;
-            chart.options.scales.y.beginAtZero = !useLogScale;
             
             // 対数スケール時のティックコールバックを更新
             if (chart.options.scales.y.ticks) {
                 chart.options.scales.y.ticks.callback = function(value, index, values) {
                     if (useLogScale) {
                         // 10の乗数の場合はそのまま表示
-                        if (Math.log10(value) % 1 === 0) {
-                            return value.toString();
+                        const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                        if (Math.log10(numValue) % 1 === 0) {
+                            return numValue.toString();
                         }
                         // それ以外は表示しない
                         return '';
@@ -207,8 +207,9 @@
                     },
                     y: {
                         type: useLogScale ? 'logarithmic' : 'linear',
-                        beginAtZero: !useLogScale, // 対数スケールの場合はゼロから始めない
                         min: useLogScale ? 1 : 0, // 対数スケールの場合は最小値を1に設定
+                        // beginAtZeroはlinearの場合のみ設定
+                        ...(useLogScale ? {} : { beginAtZero: true }),
                         title: {
                             display: true,
                             text: '頻度 (サイクル)',
@@ -222,8 +223,9 @@
                             callback: function(value, index, values) {
                                 if (useLogScale) {
                                     // 10の乗数の場合はそのまま表示
-                                    if (Math.log10(value) % 1 === 0) {
-                                        return value.toString();
+                                    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                                    if (Math.log10(numValue) % 1 === 0) {
+                                        return numValue.toString();
                                     }
                                     // それ以外は表示しない
                                     return '';
@@ -282,7 +284,6 @@
         // スケールタイプの更新
         if (chart.options && chart.options.scales && chart.options.scales.y) {
             chart.options.scales.y.type = useLogScale ? 'logarithmic' : 'linear';
-            chart.options.scales.y.beginAtZero = !useLogScale;
             chart.options.scales.y.min = useLogScale ? 1 : 0;
             
             // 対数スケール時のティックコールバックを更新
@@ -290,8 +291,9 @@
                 chart.options.scales.y.ticks.callback = function(value, index, values) {
                     if (useLogScale) {
                         // 10の乗数の場合はそのまま表示
-                        if (Math.log10(value) % 1 === 0) {
-                            return value.toString();
+                        const numValue = typeof value === 'string' ? parseFloat(value) : value;
+                        if (Math.log10(numValue) % 1 === 0) {
+                            return numValue.toString();
                         }
                         // それ以外は表示しない
                         return '';
