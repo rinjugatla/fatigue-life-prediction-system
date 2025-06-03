@@ -98,7 +98,9 @@ describe('RainDropCalculator', () => {
         const maxRange = Math.max(...rainDrops.map(drop => drop.range));
         const expectedMaxRange = 43.39179993 - (-25.46910095); // 最大値 - 最小値
         expect(maxRange).toBeCloseTo(expectedMaxRange, 5);
-    });    test('should calculate raindrops using data from data_header_short.tsv', async () => {
+    });
+
+    test('should calculate raindrops using data from data_header_short.tsv', async () => {
         // data_header_short.tsvからデータを読み取り
         const values = [
             2.594074965, -25.46910095, 43.39179993, 32.54384995, -126.873848, -70.0400238, -43.39179993, -46.45752716
