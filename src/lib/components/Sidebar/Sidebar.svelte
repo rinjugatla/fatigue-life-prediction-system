@@ -3,9 +3,7 @@
         isSidebarOpen
     } from '$lib/stores/measurement-store';
     import FileLoader from './FileLoadMenu.svelte';
-    import HistgramWidthSelector from './Histgram/HistgramWidthSelector.svelte';
-    import LogScaleToggle from './Histgram/LogScaleToggle.svelte';
-    import SpotSelector from './Histgram/SpotSelector.svelte';
+    import HistgramMenu from './Histgram/HistgramMenu.svelte';
 
     // サイドバーの開閉を切り替える
     const toggleSidebar = () => {
@@ -64,8 +62,6 @@
             : 'pointer-events-none opacity-0'}"
     >
         <FileLoader />
-        <HistgramWidthSelector />
-        <SpotSelector />
-        <LogScaleToggle />
+        <HistgramMenu />
     </div>
 </div>
