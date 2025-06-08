@@ -4,10 +4,6 @@
         selectedSpotIndices,
         selectedSpotIndex
     } from '$lib/stores/measurement-store';
-
-    // 外部からのプロパティ（オプション）
-    export let label = 'スポット選択:';
-    export let width = 'w-full';
 </script>
 
 <div class="spot-select bg-base-200 rounded-lg p-3">
@@ -15,9 +11,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-        <span>{label}</span>
+        <span>スポット選択</span>
     </label>
-    <div class="dropdown {width} mt-1">
+    <div class="dropdown w-full mt-1">
         <div tabindex="0" role="button" class="select select-bordered select-sm w-full">
             {$selectedSpotIndices.length === 0
                 ? 'スポットを選択'
