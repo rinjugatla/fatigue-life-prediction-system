@@ -1,9 +1,6 @@
 <script lang="ts">
     import HistogramChart from './HistogramChart.svelte';
-    import SpotSelector from './SpotSelector.svelte';
     import SpotStatistics from './SpotStatistics.svelte';
-    import BinWidthControl from './BinWidthControl.svelte';
-    import LogScaleToggle from './LogScaleToggle.svelte';
     import {
         measurementData,
         selectedSpotIndex,
@@ -18,11 +15,6 @@
         <div class="histogram-container flex h-full flex-col">
             <div class="histogram-header mb-4 flex flex-wrap items-center justify-between gap-4">
                 <SpotStatistics />
-                <div class="controls flex flex-wrap items-center gap-4">
-                    <SpotSelector />
-                    <BinWidthControl />
-                    <LogScaleToggle />
-                </div>
             </div>
             <div class="chart-wrapper min-h-[400px] flex-1">
                 {#if $selectedSpotIndices.length === 0}
