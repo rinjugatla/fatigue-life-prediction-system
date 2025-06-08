@@ -39,9 +39,14 @@
             </svg>
             <span>ファイル(csv, tsv)</span>
         </legend>
-        <input type="file" class="file-input file-input-sm mb-3 w-full mt-2" accept=".csv,.tsv" bind:files={$files} />        <div class="mt-2">
-            <label for="encode-select" class="text-xs mb-1 block">文字エンコード:</label>
-            <select id="encode-select" class="select select-sm w-full text-xs" bind:value={$encode}>
+        <input type="file" class="file-input file-input-sm mb-3 w-full mt-2" accept=".csv,.tsv" bind:files={$files} />        <div class="mt-3">
+            <label for="encode-select" class="font-medium flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                <span>文字エンコード</span>
+            </label>
+            <select id="encode-select" class="select select-sm text-xs w-full mt-1" bind:value={$encode}>
                 <option value="utf-8">UTF-8</option>
                 <option value="sjis">SJIS</option>
             </select>
