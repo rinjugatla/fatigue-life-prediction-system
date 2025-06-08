@@ -2,7 +2,7 @@
     import {
         isSidebarOpen
     } from '$lib/stores/measurement-store';
-    import FileLoader from './FileLoadMenu.svelte';
+    import FileLoadMenu from './FileLoadMenu.svelte';
     import HistgramMenu from './Histgram/HistgramMenu.svelte';
 
     // サイドバーの開閉を切り替える
@@ -61,7 +61,7 @@
             ? 'opacity-100'
             : 'pointer-events-none opacity-0'}"
     >
-        <FileLoader />
+        <FileLoadMenu />
         <HistgramMenu />
     </div>
 </div>
