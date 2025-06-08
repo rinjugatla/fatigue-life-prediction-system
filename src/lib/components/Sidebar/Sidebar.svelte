@@ -57,7 +57,7 @@
     </div>
 
     <div
-        class="sidebar-content overflow-y-auto p-4 {$isSidebarOpen
+        class="sidebar-content  h-full overflow-y-auto p-4 {$isSidebarOpen
             ? 'opacity-100'
             : 'pointer-events-none opacity-0'}"
     >
