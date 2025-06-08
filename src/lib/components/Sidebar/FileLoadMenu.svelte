@@ -41,7 +41,7 @@
         </legend>
         <input type="file" class="file-input file-input-sm mb-3 w-full mt-2" accept=".csv,.tsv" bind:files={$files} />        <div class="mt-2">
             <label for="encode-select" class="text-xs mb-1 block">文字エンコード:</label>
-            <select id="encode-select" class="select select-sm w-full" bind:value={$encode}>
+            <select id="encode-select" class="select select-sm w-full text-xs" bind:value={$encode}>
                 <option value="utf-8">UTF-8</option>
                 <option value="sjis">SJIS</option>
             </select>
