@@ -7,13 +7,24 @@
 </script>
 
 <div class="spot-select bg-base-200 rounded-lg p-3">
-    <label for="spot-select" class="label font-medium flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+    <label for="spot-select" class="label flex items-center font-medium">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="mr-2 h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
         </svg>
         <span>スポット選択</span>
     </label>
-    <div class="dropdown w-full mt-1">
+    <div class="dropdown mt-1 w-full">
         <div tabindex="0" role="button" class="select select-bordered select-sm w-full">
             {$selectedSpotIndices.length === 0
                 ? 'スポットを選択'
@@ -39,8 +50,19 @@
                             }
                         }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="mr-1 h-3 w-3"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"
+                            />
                         </svg>
                         すべて選択
                     </button>
@@ -51,8 +73,19 @@
                             $selectedSpotIndex = 0;
                         }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="mr-1 h-3 w-3"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
                         </svg>
                         すべて解除
                     </button>
@@ -87,7 +120,5 @@
             {/if}
         </div>
     </div>
-    <div class="text-xs text-gray-500 mt-1">
-        複数のスポットを選択するとすべて表示されます
-    </div>
+    <div class="mt-1 text-xs text-gray-500">複数のスポットを選択するとすべて表示されます</div>
 </div>
