@@ -1,7 +1,5 @@
 <script lang="ts">
-    import {
-        isSidebarOpen
-    } from '$lib/stores/measurement-store';
+    import { isSidebarOpen } from '$lib/stores/measurement-store';
     import FileLoadMenu from './FileLoadMenu.svelte';
     import HistgramMenu from './Histgram/HistgramMenu.svelte';
 
@@ -14,7 +12,7 @@
 <div
     class="sidebar-container relative {$isSidebarOpen
         ? 'w-80'
-        : 'w-12'} transition-all duration-300 ease-in-out bg-base-200"
+        : 'w-12'} bg-base-200 transition-all duration-300 ease-in-out"
 >
     <div class="sidebar-toggle absolute top-4 -right-3 z-10">
         <button
@@ -57,7 +55,7 @@
     </div>
 
     <div
-        class="sidebar-content  h-full overflow-y-auto p-4 {$isSidebarOpen
+        class="sidebar-content h-full overflow-y-auto p-4 {$isSidebarOpen
             ? 'opacity-100'
             : 'pointer-events-none opacity-0'}"
     >
