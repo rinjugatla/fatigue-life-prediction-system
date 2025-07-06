@@ -1,22 +1,16 @@
-# sv
+# Fatigue Life Prediction System
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A web application for fatigue life prediction analysis, built with SvelteKit.
 
-## Creating a project
+## Deployment
 
-If you're seeing this, you've probably already done this step. Congrats!
+This application is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
 
-```bash
-# create a new project in the current directory
-npx sv create
+**Live Demo**: [https://rinjugatla.github.io/fatigue-life-prediction-system/](https://rinjugatla.github.io/fatigue-life-prediction-system/)
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Development
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've cloned the repository and installed dependencies with `npm install`, start a development server:
 
 ```bash
 npm run dev
@@ -35,4 +29,24 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## Testing
+
+Run the test suites:
+
+```bash
+# Run unit tests
+npm run test:unit
+
+# Run all tests (unit + e2e)
+npm run test
+```
+
+## Linting and Formatting
+
+```bash
+# Check code formatting and linting
+npm run lint
+
+# Fix code formatting
+npm run format
+```
